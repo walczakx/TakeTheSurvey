@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 14 Kwi 2018, 16:49
+-- Czas generowania: 14 Kwi 2018, 21:42
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -25,30 +25,31 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `completedsurvey`
+-- Struktura tabeli dla tabeli `completedanswers`
 --
 
-CREATE TABLE `completedsurvey` (
-  `id_completedsurvey` int(11) NOT NULL,
+CREATE TABLE `completedanswers` (
+  `id_completedanswer` int(11) NOT NULL,
+  `id_survey` int(11) NOT NULL,
   `id_surveytemplate` int(11) NOT NULL,
   `id_question` int(11) NOT NULL,
   `id_answer` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Zrzut danych tabeli `completedsurvey`
+-- Zrzut danych tabeli `completedanswers`
 --
 
-INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_surveytemplate`, `id_question`, `id_answer`) VALUES
-(1, 2, 1, 1),
-(2, 4, 2, 4),
-(3, 4, 2, 5),
-(4, 5, 3, 6),
-(5, 5, 3, 7),
-(6, 5, 3, 8),
-(7, 5, 3, 9),
-(8, 6, 4, 10),
-(9, 6, 4, 11);
+INSERT INTO `completedanswers` (`id_completedanswer`, `id_survey`, `id_surveytemplate`, `id_question`, `id_answer`) VALUES
+(1, 2, 2, 1, 1),
+(2, 2, 4, 2, 4),
+(3, 2, 4, 2, 5),
+(4, 2, 5, 3, 6),
+(5, 2, 5, 3, 7),
+(6, 2, 5, 3, 8),
+(7, 2, 5, 3, 9),
+(8, 2, 6, 4, 10),
+(9, 2, 6, 4, 11);
 
 -- --------------------------------------------------------
 
@@ -116,16 +117,15 @@ INSERT INTO `questionbase` (`id_question`, `question_description`, `questiontype
 CREATE TABLE `questiontags` (
   `id_questiontag` int(11) NOT NULL,
   `id_tag` int(11) NOT NULL,
-  `id_question` int(11) DEFAULT NULL,
-  `id_survey` int(11) DEFAULT NULL
+  `id_question` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `questiontags`
 --
 
-INSERT INTO `questiontags` (`id_questiontag`, `id_tag`, `id_question`, `id_survey`) VALUES
-(2, 2, 2, 2);
+INSERT INTO `questiontags` (`id_questiontag`, `id_tag`, `id_question`) VALUES
+(2, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -136,15 +136,17 @@ INSERT INTO `questiontags` (`id_questiontag`, `id_tag`, `id_question`, `id_surve
 CREATE TABLE `survey` (
   `id_survey` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `survey_description` varchar(250) DEFAULT NULL
+  `survey_description` varchar(250) DEFAULT NULL,
+  `datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `survey`
 --
 
-INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`) VALUES
-(2, 1, 'To jest nasza pierwsza ankieta');
+INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`, `datetime`, `active`) VALUES
+(2, 1, 'To jest nasza pierwsza ankieta', '2018-04-14 21:11:19', 1);
 
 -- --------------------------------------------------------
 
@@ -154,19 +156,19 @@ INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`) VALUES
 
 CREATE TABLE `surveytemplate` (
   `id_surveytemplate` int(11) NOT NULL,
-  `id_question` int(11) DEFAULT NULL,
-  `id_survey` int(11) NOT NULL
+  `id_survey` int(11) NOT NULL,
+  `id_question` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `surveytemplate`
 --
 
-INSERT INTO `surveytemplate` (`id_surveytemplate`, `id_question`, `id_survey`) VALUES
-(2, 1, 2),
+INSERT INTO `surveytemplate` (`id_surveytemplate`, `id_survey`, `id_question`) VALUES
+(2, 2, 1),
 (4, 2, 2),
-(5, 3, 2),
-(6, 4, 2);
+(5, 2, 3),
+(6, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -210,13 +212,14 @@ INSERT INTO `users` (`id_user`, `login`, `pass`) VALUES
 --
 
 --
--- Indexes for table `completedsurvey`
+-- Indexes for table `completedanswers`
 --
-ALTER TABLE `completedsurvey`
-  ADD PRIMARY KEY (`id_completedsurvey`),
+ALTER TABLE `completedanswers`
+  ADD PRIMARY KEY (`id_completedanswer`),
   ADD KEY `id_surveytemplate` (`id_surveytemplate`) USING BTREE,
   ADD KEY `id_answer` (`id_answer`),
-  ADD KEY `id_question` (`id_question`);
+  ADD KEY `id_question` (`id_question`),
+  ADD KEY `id_survey` (`id_survey`);
 
 --
 -- Indexes for table `possibleanswers`
@@ -237,8 +240,7 @@ ALTER TABLE `questionbase`
 ALTER TABLE `questiontags`
   ADD PRIMARY KEY (`id_questiontag`),
   ADD KEY `id_tag` (`id_tag`),
-  ADD KEY `id_queston` (`id_question`),
-  ADD KEY `id_survey` (`id_survey`);
+  ADD KEY `id_queston` (`id_question`);
 
 --
 -- Indexes for table `survey`
@@ -272,10 +274,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT dla tabeli `completedsurvey`
+-- AUTO_INCREMENT dla tabeli `completedanswers`
 --
-ALTER TABLE `completedsurvey`
-  MODIFY `id_completedsurvey` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+ALTER TABLE `completedanswers`
+  MODIFY `id_completedanswer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT dla tabeli `possibleanswers`
@@ -299,7 +301,7 @@ ALTER TABLE `questiontags`
 -- AUTO_INCREMENT dla tabeli `surveytemplate`
 --
 ALTER TABLE `surveytemplate`
-  MODIFY `id_surveytemplate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_surveytemplate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT dla tabeli `tags`
@@ -318,12 +320,13 @@ ALTER TABLE `users`
 --
 
 --
--- Ograniczenia dla tabeli `completedsurvey`
+-- Ograniczenia dla tabeli `completedanswers`
 --
-ALTER TABLE `completedsurvey`
-  ADD CONSTRAINT `completedsurvey_ibfk_1` FOREIGN KEY (`id_answer`) REFERENCES `possibleanswers` (`id_answer`),
-  ADD CONSTRAINT `completedsurvey_ibfk_2` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`),
-  ADD CONSTRAINT `completedsurvey_ibfk_3` FOREIGN KEY (`id_surveytemplate`) REFERENCES `surveytemplate` (`id_surveytemplate`);
+ALTER TABLE `completedanswers`
+  ADD CONSTRAINT `completedanswers_ibfk_1` FOREIGN KEY (`id_answer`) REFERENCES `possibleanswers` (`id_answer`),
+  ADD CONSTRAINT `completedanswers_ibfk_2` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`),
+  ADD CONSTRAINT `completedanswers_ibfk_3` FOREIGN KEY (`id_surveytemplate`) REFERENCES `surveytemplate` (`id_surveytemplate`),
+  ADD CONSTRAINT `completedanswers_ibfk_4` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`);
 
 --
 -- Ograniczenia dla tabeli `possibleanswers`
@@ -336,8 +339,7 @@ ALTER TABLE `possibleanswers`
 --
 ALTER TABLE `questiontags`
   ADD CONSTRAINT `questiontags_ibfk_1` FOREIGN KEY (`id_tag`) REFERENCES `tags` (`id_tag`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `questiontags_ibfk_2` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `questiontags_ibfk_3` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `questiontags_ibfk_2` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ograniczenia dla tabeli `survey`
