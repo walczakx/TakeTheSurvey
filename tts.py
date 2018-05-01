@@ -11,7 +11,7 @@ def index():
 	 
 @app.route('/register')
 def register():
-	return render_template('index.html')
+	return render_template('register.html')
 
 # login existing user
 @app.route('/login',methods=['POST'])
