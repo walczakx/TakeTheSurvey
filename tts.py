@@ -7,16 +7,16 @@ app = Flask(__name__)
  
 @app.route('/')
 def index():
-	return main.index("Maciej")
+	return render_template('index.html')
 	 
 @app.route('/register')
 def register():
 	return render_template('register.html')
 
 # login existing user
-@app.route('/login',methods=['POST'])
+@app.route('/login')
 def login():
-	return render_template('index.html')
+	return render_template('index.html', user_logged=True)
  
 # delete user account
 @app.route('/delete_account',methods=['POST'])

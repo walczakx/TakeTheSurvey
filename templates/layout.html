@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+ 
+<head>
+	{% block head %}
+
+	<title>TakeTheSurvey</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	 
+	<!-- bootstrap, jquery -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+
+	<!-- default stylesheet -->
+	<link rel="stylesheet" href="../static/css/tts.css" type="text/css">
+	
+	{% endblock %}
+</head>
+ 
+<body>
+<div class="custom_navbar">
+	<nav class="navbar navbar-inverse navbar-static-top">
+	  <div class="container">
+		 <div class="navbar-header" style="height:70px;"">
+		 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar3">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+		   <a class="navbar-brand" href="#"><img src="../static/img/logo.png" width="87px" height="57px" alt="TakeTheSurvey" class="img-thumbnail"></a>
+		 </div>
+		 <ul class="nav navbar-nav">
+		 
+		   <li class="dropdown" style="padding:10px;">
+		     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Surveys
+		     <span class="caret"></span></a>
+		     <ul class="dropdown-menu">
+					<li><a href="#">Browse</a></li>
+				{% if user_logged %}
+					<li><a href="link">Add new</a></li>
+		      {% endif %} 
+		     </ul>
+		   </li>
+		   
+	 		{% if user_logged %}
+		   <li class="dropdown" style="padding:10px;">
+		     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Questions
+		     <span class="caret"></span></a>
+		     <ul class="dropdown-menu">
+					<li><a href="#">Browse</a></li>
+
+					<li><a href="link">Add new</a></li>
+
+		     </ul>
+		   </li>
+		  {% endif %} 
+      <li style="padding:10px;"><a href="#">About</a></li>
+		 </ul>
+		 <ul class="nav navbar-nav navbar-right" style="margin-right:25px;">	
+		  		{% if user_logged %}
+		   <li style="padding:10px;"><a href="#"><span class="glyphicon glyphicon-option-vertical"></span> Settings</a></li>
+		   <li style="padding:10px;"><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		 		{% else %}
+		   <li style="padding:10px;"><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+		   <li style="padding:10px;"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				{% endif %}
+		 </ul>
+	  </div>
+</nav>
+</div>
+
+ <div class="container">
+ {% block content %}{% endblock %}
+ </div>
+</body>
+ 
+</html>
