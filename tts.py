@@ -10,12 +10,12 @@ app = Flask(__name__)
 def index():
 	return render_template('index.html')
 	 
-@app.route('/register')
+@app.route('/register',methods=['POST'])
 def register():
-	return render_template('register.html')
+	return render_template('index.html')
 
 # login existing user
-@app.route('/login')
+@app.route('/login',methods=['POST'])
 def login():
 	return render_template('index.html', user_logged=True)
  

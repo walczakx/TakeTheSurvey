@@ -65,7 +65,7 @@
 		   <li style="padding:10px;"><a href="/user_account"><span class="glyphicon glyphicon-option-vertical"></span> Settings</a></li>
 		   <li style="padding:10px;"><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		 		{% else %}
-		   <li style="padding:10px;"><a href="/singup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+		   <li style="padding:10px;"><a data-toggle="modal" href="#signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 		   <li style="padding:10px;"><a data-toggle="modal" href="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 				{% endif %}
 		 </ul>
@@ -73,49 +73,15 @@
 </nav>
 </div>
 
-<!-- Login modal content-->
-  <div class="modal fade" id="login" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 style="color:green;"><span class="glyphicon glyphicon-lock"></span> Login</h4>
-        </div>
-        <div class="modal-body">
-          <form role="form" action="/login">
-            <div class="form-group">
-              <label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
-              <input type="text" class="form-control" id="usrname" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-              <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
-              <input type="text" class="form-control" id="psw" placeholder="Enter password">
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" value="" checked>Remember me</label>
-            </div>
-            <button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login</button>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-          <p>Not a member? <a href="#">Sign Up</a></p>
-          <p>Forgot <a href="#">Password?</a></p>
-        </div>
-      </div>
-    </div>
-  </div> 
-<!-- end modals content -->
-
-
-
+{% include 'modals/login.html' %}
+{% include 'modals/register.html' %}
 
  <div class="container" style="margin-top:100px;">
  {% block content %}{% endblock %}
  </div>
  
 <footer class="container-fluid custom_footer">
-  <p>Copyright TakeTheSurvey 2018. By JK & MW</p> 
+  <p>&copy 2018 TakeTheSurvey. By JK & MW</p> 
 </footer>
 
 
