@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 20 Kwi 2018, 10:32
+-- Czas generowania: 25 Cze 2018, 10:28
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -235,15 +235,16 @@ INSERT INTO `tags` (`id_tag`, `tag_description`) VALUES
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `login` varchar(25) NOT NULL,
-  `pass` varchar(25) NOT NULL
+  `pass` varchar(25) NOT NULL,
+  `email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `users`
 --
 
-INSERT INTO `users` (`id_user`, `login`, `pass`) VALUES
-(1, 'login', 'login');
+INSERT INTO `users` (`id_user`, `login`, `pass`, `email`) VALUES
+(1, 'login', 'login', 'email@email.com');
 
 --
 -- Indeksy dla zrzutów tabel
