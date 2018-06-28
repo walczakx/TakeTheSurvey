@@ -10,24 +10,24 @@
           <form role="form" action="/register" method="POST">
             <div class="form-group">
               <label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
-              <input type="text" class="form-control" id="usrname" placeholder="Your login" class="input-xlarge">
+              <input type="text" class="form-control" name="usrname" placeholder="Your login" class="input-xlarge">
               <p class="help-block">Username can contain any letters or numbers, without spaces</p>
             </div>
 
             <div class="form-group">
               <label for="email"><span class="glyphicon glyphicon-envelope"></span> E-mail</label>
-              <input type="text" class="form-control" id="email" placeholder="Your e-mail address" class="input-xlarge">
+              <input type="text" class="form-control" name="email" placeholder="Your e-mail address" class="input-xlarge">
             </div>
 
             <div class="form-group">
               <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
-              <input type="text" class="form-control" id="psw" placeholder="Enter password">
+              <input type="text" class="form-control" name="psw" placeholder="Enter password">
               <p class="help-block">Password should be at least 4 characters</p>
             </div>
 
             <div class="form-group">
               <label for="psw_confirm"><span class="glyphicon glyphicon-eye-open"></span> Confirm password</label>
-              <input type="text" class="form-control" id="psw_confirm" placeholder="Enter password, again">
+              <input type="text" class="form-control" name="psw_confirm" placeholder="Enter password, again">
             </div>
             <button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Register</button>
           </form>

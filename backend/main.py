@@ -1,4 +1,5 @@
-from flask import render_template
+def do_the_login(username, password, rememberme):
+	return True
 
-def index(user):
-	return render_template('index.html', name=user)
+def do_the_register(username, email, password, conf_password):
+	return True

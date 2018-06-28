@@ -1,0 +1,16 @@
+only for development, not for production.
+
+how to import db.sql into your mariadb instance:
+
+1. mysql
+2. create database tts_db;
+3. quit
+4. as root:
+	mysql -h localhost tts_db < /var/www/TakeTheSurbey/db.sql
+	
+5. mysql
+6. create user 'tts'@'localhost' identified by 'tts_secret_password';
+7. grant all privileges on tts_db.* to 'tts'@'localhost';
+8. quit
+
+done

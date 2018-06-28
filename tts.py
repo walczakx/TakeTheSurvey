@@ -1,22 +1,44 @@
 from flask import Flask, render_template, json, request
 from flaskext.mysql import MySQL
 
+import backend.db as db
 import backend.main as main
 
 app = Flask(__name__)
- 
+mysql = MySQL(app)
+
 @app.route('/')
 @app.route('/index')
 def index():
 	return render_template('index.html')
 	 
-@app.route('/register',methods=['POST'])
+@app.route('/register', methods=["POST"])
 def register():
-	return render_template('index.html')
+	assert request.path == '/register'
+	assert request.method == "POST"
+
+	status = main.do_the_register(
+		request.form['usrname'],
+		request.form['email'],
+		request.form['psw'],
+		request.form['psw_confirm']
+	)
+	return render_template('index.html', succesfull_register = status, username = request.form['usrname'])
 
 # login existing user
-@app.route('/login',methods=['POST'])
+@app.route('/login', methods=["POST", "GET"])
 def login():
+	assert request.path == '/login'
+
+	if request.method == "POST":
+		main.do_the_login(
+			request.form['usrname'],
+			request.form['psw'],
+			request.form['rememberme']
+		)
+	else:
+		return render_template('index.html')
+
 	return render_template('index.html', user_logged=True)
  
 # delete user account
