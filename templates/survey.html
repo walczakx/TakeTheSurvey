@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+ <div class="container">
+     
+placeholder for survey view
+
+  {% if survey_id %}
+ <br /> show specific survey
+
+     {% for question in survey %}
+ </br>    pokaz kazde pytanie
+     {% endfor %}
+
+  {% else %}
+<br />  show all survey *list*
+  {% endif %}
+
+
+ </div>
+
+{% endblock %}

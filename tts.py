@@ -1,11 +1,9 @@
 from flask import Flask, render_template, json, request
-from flaskext.mysql import MySQL
-
 import backend.db as db
 import backend.main as main
 
 app = Flask(__name__)
-mysql = MySQL(app)
+db = db.database(app)
 
 @app.route('/')
 @app.route('/index')
@@ -39,8 +37,16 @@ def login():
 	else:
 		return render_template('index.html')
 
-	return render_template('index.html', user_logged=True)
- 
+	return render_template('index.html', user_logged = True)
+
+@app.route('/logout', methods=["GET"])
+def logout():
+	return render_template('index.html', user_logged = False)
+
+@app.route('/user_account', methods=["GET"])
+def user_account():
+	return render_template('user.html', user_logged = True)
+
 # delete user account
 @app.route('/delete_account',methods=['POST'])
 def delete_user_account():
@@ -79,6 +85,15 @@ def delete_question():
 	return render_template('index.html')
 
 # view survey
+@app.route('/show_survey')
+def show_survey():
+	# surveys = main.get_survey_list()
+	return render_template('survey.html')
+
+@app.route('/show_survey/<survey_id>')
+def show_specific_survey(survey_id):
+	# survey = main.get_survey(survey_id)
+	return render_template('survey.html', survey_id = survey_id)
 
 # fill out survey
 
