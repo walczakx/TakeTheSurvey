@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, request, session
 import backend.db as db
 import backend.main as main
 
@@ -21,6 +21,7 @@ def register():
 		request.form['psw'],
 		request.form['psw_confirm']
 	)
+
 	return render_template('index.html', succesfull_register = status, username = request.form['usrname'])
 
 # login existing user
