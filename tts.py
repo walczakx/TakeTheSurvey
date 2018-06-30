@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request
 import backend.db as db
 import backend.main as main
+import backend.config as config
 
 app = Flask(__name__)
 db = db.database(app)
+config = config.config(app)
 
 @app.route('/')
 @app.route('/index')
@@ -22,7 +24,7 @@ def register():
 		request.form['psw_confirm']
 	)
 
-	return render_template('index.html', succesfull_register = status, username = request.form['usrname'])
+	return render_template('index.html', succesfull_register = status)
 
 # login existing user
 @app.route('/login', methods=["POST", "GET"])
@@ -38,15 +40,16 @@ def login():
 	else:
 		return render_template('index.html')
 
-	return render_template('index.html', user_logged = True)
+	return render_template('index.html')
 
 @app.route('/logout', methods=["GET"])
 def logout():
-	return render_template('index.html', user_logged = False)
+	main.logout()
+	return render_template('index.html')
 
 @app.route('/user_account', methods=["GET"])
 def user_account():
-	return render_template('user.html', user_logged = True)
+	return render_template('user.html')
 
 # delete user account
 @app.route('/delete_account',methods=['POST'])
@@ -98,6 +101,19 @@ def show_specific_survey(survey_id):
 
 # fill out survey
 
+
+def is_user_logged():
+	return main.is_user_logged()
+
+def has_admin_priviliges():
+	return main.has_admin_priviliges()
+
+def is_survey_owner(survey_id):
+	return main.is_survey_owner(survey_id)
+
+app.jinja_env.globals.update(is_user_logged=is_user_logged,
+							 has_admin_priviliges = has_admin_priviliges,
+							 is_survey_owner=is_survey_owner)
 
 if __name__ == '__main__':
 	app.run()

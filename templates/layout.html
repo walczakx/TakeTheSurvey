@@ -34,7 +34,7 @@
 		 </div>
 		 <ul class="nav navbar-nav">
 
-				{% if user_logged %}		 
+				{% if is_user_logged() %}
 		   <li class="dropdown" style="padding:10px;">
 		     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Surveys
 		     <span class="caret"></span></a>
@@ -47,7 +47,7 @@
 					<li style="padding:10px;"><a href="/show_survey">Fill out a survey!</a></li>
 		      {% endif %} 
 		   
-	 		{% if user_logged %}
+	 		{% if is_user_logged() %}
 		   <li class="dropdown" style="padding:10px;">
 		     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Questions
 		     <span class="caret"></span></a>
@@ -61,7 +61,7 @@
       <li style="padding:10px;"><a href="#">About</a></li>
 		 </ul>
 		 <ul class="nav navbar-nav navbar-right" style="margin-right:25px;">	
-		  		{% if user_logged %}
+		  		{% if is_user_logged() %}
 		   <li style="padding:10px;"><a href="/user_account"><span class="glyphicon glyphicon-option-vertical"></span> Settings</a></li>
 		   <li style="padding:10px;"><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		 		{% else %}
