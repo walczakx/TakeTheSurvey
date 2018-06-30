@@ -19,3 +19,4 @@ class database:
         #data = cursor.fetchone()
         
         return cursor.fetchall()
+
