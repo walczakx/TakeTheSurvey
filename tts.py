@@ -31,21 +31,18 @@ def register():
 def login():
 	assert request.path == '/login'
 
-	if request.method == "POST":
-		main.do_the_login(
-			request.form['usrname'],
-			request.form['psw'],
-			request.form['rememberme']
-		)
-	else:
-		return render_template('index.html')
+	if request.method == "POST" and main.do_the_login(request.form['usrname'],
+														request.form['psw'],
+														request.form['rememberme']):
+		return render_template('index.html', msg = "Success! You're now logged in")
 
-	return render_template('index.html')
+	else:
+		return render_template('index.html', msg = "Ops, something went wrong. Try again")
 
 @app.route('/logout', methods=["GET"])
 def logout():
 	main.logout()
-	return render_template('index.html')
+	return render_template('index.html', msg = "You're now logged off")
 
 @app.route('/user_account', methods=["GET"])
 def user_account():
@@ -102,14 +99,15 @@ def show_specific_survey(survey_id):
 # fill out survey
 
 
+#helper functions for templates
 def is_user_logged():
 	return main.is_user_logged()
 
 def has_admin_priviliges():
-	return main.has_admin_priviliges()
+	return main.has_admin_priviliges(user_id)
 
 def is_survey_owner(survey_id):
-	return main.is_survey_owner(survey_id)
+	return main.is_survey_owner(survey_id, user_id)
 
 app.jinja_env.globals.update(is_user_logged=is_user_logged,
 							 has_admin_priviliges = has_admin_priviliges,

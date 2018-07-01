@@ -1,8 +1,7 @@
 
 class user():
-    #user
+    def try_to_login(self, username, password):
+        return True
 
-    def check_password(self, password):
-        pass
-
-    
+    def get_user_privileges(self, username):
+        return "user"
