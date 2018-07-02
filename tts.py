@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request
-import backend.db as db
 import backend.main as main
-import backend.config as config
 
 app = Flask(__name__)
-db = db.database(app)
-config = config.config(app)
+main = main.main(app)
 
 @app.route('/')
 @app.route('/index')
@@ -15,27 +12,23 @@ def index():
 @app.route('/register', methods=["POST"])
 def register():
 	assert request.path == '/register'
-	assert request.method == "POST"
 
-	status = main.do_the_register(
-		request.form['usrname'],
-		request.form['email'],
-		request.form['psw'],
-		request.form['psw_confirm']
-	)
+	psw = main.auth_.hash(request.form['psw'])
+	psw_c = main.auth_.hash(request.form['psw_confirm'])
 
-	return render_template('index.html', succesfull_register = status)
+	if request.method == "POST" and main.do_the_register(request.form['usrname'], request.form['email'], psw, psw_c):
+		return render_template('index.html', msg = "Success! You can now sign in")
+	else:
+		return render_template('index.html', msg = "Ops, something went wrong. Try again")
 
 # login existing user
-@app.route('/login', methods=["POST", "GET"])
+@app.route('/login', methods=["POST"])
 def login():
 	assert request.path == '/login'
+	psw = main.auth_.hash(request.form['psw'])
 
-	if request.method == "POST" and main.do_the_login(request.form['usrname'],
-														request.form['psw'],
-														request.form['rememberme']):
+	if request.method == "POST" and main.do_the_login(request.form['usrname'], psw, request.form['rememberme']):
 		return render_template('index.html', msg = "Success! You're now logged in")
-
 	else:
 		return render_template('index.html', msg = "Ops, something went wrong. Try again")
 
@@ -46,13 +39,18 @@ def logout():
 
 @app.route('/user_account', methods=["GET"])
 def user_account():
-	return render_template('user.html')
+	user_data = main.get_user_data()
+	return render_template('user.html', user_data = user_data)
 
 # delete user account
 @app.route('/delete_account',methods=['POST'])
 def delete_user_account():
+	assert request.path == '/delete_account'
+	psw = main.auth_.hash(request.form['psw'])
+	if request.method == "POST" and main.do_the_login(request.form['usrname'], psw):
+		main.delete_account(request.form['usrname'])
 	return render_template('index.html')
-	
+
 # create new survey
 @app.route('/create',methods=['GET'])
 def create_new_survey():
@@ -88,15 +86,16 @@ def delete_question():
 # view survey
 @app.route('/show_survey')
 def show_survey():
-	# surveys = main.get_survey_list()
-	return render_template('survey.html')
+	surveys = main.get_survey_list()
+	return render_template('survey.html', surveys = surveys)
 
 @app.route('/show_survey/<survey_id>')
 def show_specific_survey(survey_id):
-	# survey = main.get_survey(survey_id)
-	return render_template('survey.html', survey_id = survey_id)
-
-# fill out survey
+	survey = main.get_survey(survey_id)
+	if survey:
+		return render_template('survey.html', survey = survey)
+	else:
+		return "error, no data"
 
 
 #helper functions for templates
@@ -104,14 +103,18 @@ def is_user_logged():
 	return main.is_user_logged()
 
 def has_admin_priviliges():
-	return main.has_admin_priviliges(user_id)
+	return main.user.has_admin_priviliges(user_id)
 
 def is_survey_owner(survey_id):
-	return main.is_survey_owner(survey_id, user_id)
+	return main.user.is_survey_owner(survey_id, user_id)
 
-app.jinja_env.globals.update(is_user_logged=is_user_logged,
+def is_question_owner(question_id):
+	return main.user.is_question_owner(question_id, user_id)
+
+app.jinja_env.globals.update(is_user_logged = is_user_logged,
 							 has_admin_priviliges = has_admin_priviliges,
-							 is_survey_owner=is_survey_owner)
+							 is_survey_owner = is_survey_owner,
+							 is_question_owner = is_question_owner)
 
 if __name__ == '__main__':
 	app.run()
