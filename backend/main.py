@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, render_template
 from backend import user, db, auth, config
 
 class main():
@@ -9,10 +9,9 @@ class main():
 		self.auth_ = auth.auth()
 
 	def do_the_login(self, username, password, rememberme):
-		#TODO if remember me -> set cookie
 		if self.user_.try_to_login(username, password):
 			session['username'] = username
-			if self.user_.has_admin_privileges(self.user_.get_user_id("jasio")):
+			if self.user_.has_admin_privileges(self.user_.get_user_id(username)):
 				session['privileges'] = "admin"
 			else:
 				session['privileges'] = "user"
@@ -23,7 +22,7 @@ class main():
 		if self.auth_.check_password(password, conf_password)\
 				and self.auth_.validate_email(email)\
 				and self.user_.check_if_username_is_free(username):
-			return self.db_.user_register(username, email, password, conf_password)
+			return self.db_.user_register(username, email, password)
 		return False
 
 	def logout(self):
@@ -45,3 +44,17 @@ class main():
 
 	def get_survey(self, survey_id):
 		return self.db_.get_survey(survey_id)
+
+	def create_survey(self):
+		#todo
+		return 1
+
+	def error_page(self):
+		return render_template('index.html', msg = "Ops, something went wrong. Try again")
+
+	def delete_survey(self, survey_id):
+		return True #self.db_.delete_survey()  ## todo check if exist
+
+	def add_question(self):
+		# todo, verification etc
+		return True # self.db_add_question()

@@ -10,20 +10,10 @@ class database:
         app.config['MYSQL_DATABASE_HOST'] = config.db_host
 
         self.mysql.init_app(app)
+        
     def mysql_connect(self):
         conn = self.mysql.connect()
         return conn.cursor()
-
-
-    def do_some_query(self, name, id):
-        cursor = self.mysql_connect()
-        try:
-            cmd = "update people set name=%s where id=%s"
-            cursor.execute(cmd, (name, id))
-            return cursor.fetchall()
-        except:
-            #do something
-            return
 
     def get_user_id(self, username):
         cursor = self.mysql_connect()
@@ -35,23 +25,22 @@ class database:
             # do something
             return
 
-    def user_register(self, username, password, email,  conf_password):
+    def user_register(self, username, email, password):
         # some sql, if succes, return true
         cursor = self.mysql_connect()
         try:
             cmd = "INSERT INTO `users`( `login`, `pass`, `email`) VALUES (%s,%s,$s)"
             cursor.execute(cmd, (username, password, email))
-            return cursor.fetchone()
         except:
-            # do something
-            return
+            return False
+        return True
 
     def check_if_username_is_free(self, username):
         # if select username from users where username = username is null
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_user FROM `users` WHERE login = %s"
-            cursor.execute(cmd, (username))
+            cursor.execute(cmd, (username,))
             return cursor.fetchone()
         except:
             # do something
@@ -62,10 +51,10 @@ class database:
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %d"
-            cursor.execute(cmd, (user_id))
+            cursor.execute(cmd, (user_id,))
             return cursor.fetchone()
         except:
-        # do something
+            return
         return { "username":"Jasio","email":"jasio@jasio.ja"}
 
     def delete_account(self, user_id):
@@ -73,29 +62,27 @@ class database:
         cursor = self.mysql_connect()
         try:
             cmd = "DELETE * FROM `users` WHERE id_user = %d"
-            cursor.execute(cmd, (user_id))
+            cursor.execute(cmd, (user_id,))
             return cursor.fetchone()
         except:
             # do something
             return
-        pass
 
     def get_survey_list(self):
         # sql query
         # jakos to trzeba zwrocic, zrob tak aby bylo dobrze:)
-        # zwraca wszystkie aktywne do wypełnienia ankiety
+        # zwraca wszystkie aktywne do wypelnienia ankiety
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT * FROM `survey` where active = '1'"
-            cursor.execute(cmd, (user_id))
+            cursor.execute(cmd)
             return cursor.fetchone()
         except:
             # do something
             return
-        pass
 
     def get_specific_survey(self, survey_id):
-        # jw zwraca całą ankietę  z pytaniami do wypełnienia z możliwymi odpowiedziami
+        # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT * FROM `survey` JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey JOIN questionbase ON surveytemplate.id_question = questionbase.id_question JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question WHERE survey.id_survey = %d"
@@ -107,7 +94,7 @@ class database:
         pass
 
     def add_question_to_questionbase(self, question_description, id_question_type):
-        # dodaje pytanie do bazy pytań wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
+        # dodaje pytanie do bazy pytan wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
         cursor = self.mysql_connect()
         try:
             cmd = "INSERT INTO `questionbase`(`question_description`, `id_questiontype`) VALUES (%s, %d)"
@@ -120,22 +107,22 @@ class database:
 
 
     def get_all_question_in_questionbase(self):
-        # listuje wsyztkie pytania dostępne w bazie pytań
+        # listuje wsyztkie pytania dostepne w bazie pytan
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT * FROM `questionbase`"
-            cursor.execute(cmd, (id_question))
+            cursor.execute(cmd)
             return cursor.fetchone()
         except:
             # do something
             return
 
-    def get_question_from_questionbase_by_tag(self, tag_desription):
+    def get_question_from_questionbase_by_tag(self, tag_description):
         # listuje pytania po tagacah
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT * FROM questiontags JOIN tags ON questiontags.id_tag = tags.id_tag JOIN questionbase ON questiontags.id_question = questionbase.id_question WHERE tag_description = %s"
-            cursor.execute(cmd, (tag_description))
+            cursor.execute(cmd, (tag_description, ))
             return cursor.fetchone()
         except:
             # do something
@@ -146,7 +133,7 @@ class database:
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT `id_answer`, `id_question`, `answerdescription` FROM `possibleanswers` WHERE id_question = %d"
-            cursor.execute(cmd, (id_question))
+            cursor.execute(cmd, (id_question, ))
             return cursor.fetchone()
         except:
             # do something
