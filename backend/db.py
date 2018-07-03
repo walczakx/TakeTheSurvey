@@ -29,7 +29,7 @@ class database:
         # some sql, if succes, return true
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `users`( `login`, `pass`, `email`) VALUES (%s,%s,$s)"
+            cmd = "INSERT INTO `users`( `login`, `pass`, `email`) VALUES (%s,%s,%s)"
             cursor.execute(cmd, (username, password, email))
         except:
             return False
