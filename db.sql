@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 25 Cze 2018, 10:28
+-- Czas generowania: 03 Lip 2018, 20:58
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -97,7 +97,9 @@ INSERT INTO `possibleanswers` (`id_answer`, `id_question`, `answerdescription`) 
 (9, 3, '3'),
 (10, 4, 'NIC'),
 (11, 4, 'WSZYSTKO'),
-(12, 4, 'CZESC');
+(12, 4, 'CZESC'),
+(13, 10, 'OK'),
+(14, 10, 'NIE OK');
 
 -- --------------------------------------------------------
 
@@ -236,15 +238,17 @@ CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `login` varchar(25) NOT NULL,
   `pass` varchar(25) NOT NULL,
-  `email` varchar(50) NOT NULL
+  `email` varchar(50) NOT NULL,
+  `Role` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `users`
 --
 
-INSERT INTO `users` (`id_user`, `login`, `pass`, `email`) VALUES
-(1, 'login', 'login', 'email@email.com');
+INSERT INTO `users` (`id_user`, `login`, `pass`, `email`, `Role`) VALUES
+(1, 'login', 'login', 'email@email.com', 1),
+(2, 'login2', 'login2', 'login2@login1.com', 1);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -342,7 +346,7 @@ ALTER TABLE `completedsurvey`
 -- AUTO_INCREMENT dla tabeli `possibleanswers`
 --
 ALTER TABLE `possibleanswers`
-  MODIFY `id_answer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_answer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT dla tabeli `questionbase`
@@ -372,7 +376,7 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ograniczenia dla zrzutów tabel
@@ -382,9 +386,6 @@ ALTER TABLE `users`
 -- Ograniczenia dla tabeli `completedanswers`
 --
 ALTER TABLE `completedanswers`
-  ADD CONSTRAINT `completedanswers_ibfk_1` FOREIGN KEY (`id_answer`) REFERENCES `possibleanswers` (`id_answer`),
-  ADD CONSTRAINT `completedanswers_ibfk_2` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`),
-  ADD CONSTRAINT `completedanswers_ibfk_3` FOREIGN KEY (`id_surveytemplate`) REFERENCES `surveytemplate` (`id_surveytemplate`),
   ADD CONSTRAINT `completedanswers_ibfk_4` FOREIGN KEY (`id_completedsurvey`) REFERENCES `completedsurvey` (`id_completedsurvey`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -397,7 +398,7 @@ ALTER TABLE `completedsurvey`
 -- Ograniczenia dla tabeli `possibleanswers`
 --
 ALTER TABLE `possibleanswers`
-  ADD CONSTRAINT `possibleanswers_ibfk_1` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`);
+  ADD CONSTRAINT `possibleanswers_ibfk_1` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ograniczenia dla tabeli `questionbase`
@@ -422,7 +423,6 @@ ALTER TABLE `survey`
 -- Ograniczenia dla tabeli `surveytemplate`
 --
 ALTER TABLE `surveytemplate`
-  ADD CONSTRAINT `surveytemplate_ibfk_1` FOREIGN KEY (`id_question`) REFERENCES `questionbase` (`id_question`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `surveytemplate_ibfk_2` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
