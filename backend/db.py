@@ -22,8 +22,7 @@ class database:
             cursor.execute(cmd, (username,))
             return cursor.fetchone()
         except:
-            # do something
-            return
+            return main.error_page()
 
     def user_register(self, username, email, password):
         # some sql, if succes, return true
@@ -52,10 +51,9 @@ class database:
         try:
             cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %d"
             cursor.execute(cmd, (user_id,))
-            return cursor.fetchone()
+            return cursor.fetchall()
         except:
-            return
-        return { "username":"Jasio","email":"jasio@jasio.ja"}
+            return False
 
     def delete_account(self, user_id):
         # sql delete account
@@ -88,12 +86,10 @@ class database:
         try:
             cmd = "SELECT * FROM `survey` JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey JOIN questionbase ON surveytemplate.id_question = questionbase.id_question JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question WHERE survey.id_survey = %d"
             cursor.execute(cmd, (survey_id))
-            survey = cursor.fetchall()
-            return survey
+            return cursor.fetchall()
+
         except:
-            # do something
-            return
-        pass
+            return main.error_page()
 
     def add_question_to_questionbase(self, question_description, id_question_type):
         # dodaje pytanie do bazy pytan wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
@@ -151,3 +147,17 @@ class database:
         except:
             # do something
             return
+
+    def get_user_password(self, user_id):
+        # TODO
+        return "dupa"
+
+    def get_survey_owner(survey_id):
+        # TODO
+        owner_id = 1
+        return owner_id
+
+    def get_question_owner(survey_id):
+        # TODO
+        owner_id = 1
+        return owner_id

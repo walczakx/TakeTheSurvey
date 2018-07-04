@@ -9,7 +9,7 @@ class main():
 		self.auth_ = auth.auth()
 
 	def do_the_login(self, username, password, rememberme):
-		if self.user_.try_to_login(username, password):
+		if self.user_.try_to_login(self.user_.get_user_id(username), password):
 			session['username'] = username
 			if self.user_.has_admin_privileges(self.user_.get_user_id(username)):
 				session['privileges'] = "admin"
@@ -43,14 +43,16 @@ class main():
 		return self.db_.get_survey_list()
 
 	def get_survey(self, survey_id):
-		return self.db_.get_survey(survey_id)
+		return self.db_.get_specific_survey(survey_id)
 
 	def create_survey(self):
 		#todo
 		return 1
 
-	def error_page(self):
-		return render_template('index.html', msg = "Ops, something went wrong. Try again")
+	def error_page(self, msg=""):
+		if msg == "":
+			return render_template('error.html', msg="Ops, something went wrong. Try again")
+		return render_template('error.html', msg = msg)
 
 	def delete_survey(self, survey_id):
 		return True #self.db_.delete_survey()  ## todo check if exist
@@ -58,3 +60,9 @@ class main():
 	def add_question(self):
 		# todo, verification etc
 		return True # self.db_add_question()
+
+	def get_logged_user_id(self):
+		return session['username']
+
+	def get_logged_user_privileges(self):
+		return session['privileges']
