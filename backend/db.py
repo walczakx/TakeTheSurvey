@@ -76,7 +76,8 @@ class database:
         try:
             cmd = "SELECT * FROM `survey` where active = '1'"
             cursor.execute(cmd)
-            return cursor.fetchone()
+            surveys = cursor.fetchall()
+            return surveys
         except:
             # do something
             return

@@ -1,1 +1,13 @@
-<a href="./show_survey/200"> Ankieta o dupie maryni</a>
+
+<table border="1" cellpadding="5" cellspacing="5">
+{% for row in surveys %}
+    <tr>
+    {% for d in row %}
+        <td>{{ d }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+
+
