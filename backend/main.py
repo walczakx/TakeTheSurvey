@@ -49,11 +49,6 @@ class main():
 		#todo
 		return 1
 
-	def error_page(self, msg=""):
-		if msg == "":
-			return render_template('error.html', msg="Ops, something went wrong. Try again")
-		return render_template('error.html', msg = msg)
-
 	def delete_survey(self, survey_id):
 		return True #self.db_.delete_survey()  ## todo check if exist
 

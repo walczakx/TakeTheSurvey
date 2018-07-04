@@ -4,8 +4,9 @@
 
  <div class="container">
      
-{{ msg }}
-
+{%if msg %} {{ msg }}
+{% else %}  Ops, something went wrong. Please try again later.
+{% endif %}
  </div>
 
 {% endblock %}

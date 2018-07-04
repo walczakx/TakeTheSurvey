@@ -1,3 +1,4 @@
+from flask import redirect, url_for
 from flaskext.mysql import MySQL
 
 class database:
@@ -22,7 +23,7 @@ class database:
             cursor.execute(cmd, (username,))
             return cursor.fetchone()
         except:
-            return main.error_page()
+            return redirect(url_for('msg_page'))
 
     def user_register(self, username, email, password):
         # some sql, if succes, return true
@@ -89,7 +90,7 @@ class database:
             return cursor.fetchall()
 
         except:
-            return main.error_page()
+            return redirect(url_for('msg_page'))
 
     def add_question_to_questionbase(self, question_description, id_question_type):
         # dodaje pytanie do bazy pytan wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
