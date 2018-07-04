@@ -149,21 +149,42 @@ class database:
             return
 
     def get_user_password(self, user_id):
-        # TODO
-        return "dupa"
+        # zwraca has³o usera
+		cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT  `pass` FROM `users` WHERE id_user = %d"
+            cursor.execute(cmd, (user_id))
+            return cursor.fetchone()
+         except:
+            return main.error_page()
 
     def get_survey_owner(self, survey_id):
-        # TODO
-        owner_id = 1
-        return owner_id
+         # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera który wypelnil ankiete
+		cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT  `id_user` FROM `survey` WHERE id_survey = %d"
+            cursor.execute(cmd, (survey_id))
+            return cursor.fetchone()
+         except:
+            return main.error_page()
+			
+	def get_survey_respondent(self, completedsurvey_id):
+         # zwraca usera ktory wypelnil ankiete (respondenta)
+		cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT  `id_user` FROM `completedsurvey` WHERE id_completedsurvey = %d"
+            cursor.execute(cmd, (completedsurvey_id))
+            return cursor.fetchone()
+         except:
+            return main.error_page()
 
     def get_question_owner(self, survey_id):
-        # TODO
+        # TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
         owner_id = 1
         return owner_id
 
     def is_user_have_any_questions(self, user_id):
-        #TODO
+        #TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
         return False #czy uzytkownik ma jakies swoje pytania?
 
     def is_user_have_any_surveys(self, user_id):
