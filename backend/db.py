@@ -152,12 +152,20 @@ class database:
         # TODO
         return "dupa"
 
-    def get_survey_owner(survey_id):
+    def get_survey_owner(self, survey_id):
         # TODO
         owner_id = 1
         return owner_id
 
-    def get_question_owner(survey_id):
+    def get_question_owner(self, survey_id):
         # TODO
         owner_id = 1
         return owner_id
+
+    def is_user_have_any_questions(self, user_id):
+        #TODO
+        return False #czy uzytkownik ma jakies swoje pytania?
+
+    def is_user_have_any_surveys(self, user_id):
+        #todo
+        return False #czy uzytkownik ma jakies swoje ankity

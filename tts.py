@@ -138,10 +138,23 @@ def is_question_owner(question_id):
 		return main_.user_.is_question_owner(question_id, main_.get_logged_user_id())
 	return False
 
+def is_user_have_questions():
+	if main_.is_user_logged():
+		return main_.db_.is_user_have_any_questions(main_.get_logged_user_id())
+	return False
+
+def is_user_have_surveys():
+	if main_.is_user_logged():
+		return main_.db_.is_user_have_any_surveys(main_.get_logged_user_id())
+	return False
+
+
 app.jinja_env.globals.update(is_user_logged = is_user_logged,
 							 has_admin_priviliges = has_admin_priviliges,
 							 is_survey_owner = is_survey_owner,
-							 is_question_owner = is_question_owner)
+							 is_question_owner = is_question_owner,
+							 is_user_have_questions = is_user_have_questions,
+							 is_user_have_surveys = is_user_have_surveys)
 
 if __name__ == '__main__':
 	app.run()

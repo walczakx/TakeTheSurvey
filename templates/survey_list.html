@@ -15,8 +15,10 @@
                    <th>Survey desription</th>
                    <th>Date</th>
 				   <th>Show details</th>
-                   <th>Edit</th>
-                   <th>Delete</th>
+				   {% if is_user_have_surveys() %}
+				   	<th>Edit</th>
+                   	<th>Delete</th>
+				   {% endif %}
                    </thead>
      <tbody>
 				<div>
