@@ -188,5 +188,30 @@ class database:
         return False #czy uzytkownik ma jakies swoje pytania?
 
     def is_user_have_any_surveys(self, user_id):
-        #todo
-        return False #czy uzytkownik ma jakies swoje ankity
+	    #zwraca liczbe ankiet (wzorccow) usera
+        cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT  count(id_survey) AS NumberOfSurveys FROM `survey` WHERE id_user = %d"
+            cursor.execute(cmd, (user_id))
+            return cursor.fetchone()
+         except:
+            return False 
+	def is_user_have_any_completed_surveys(self, user_id):
+	    #zwraca liczbe ankiet (wzorccow) usera
+        cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT  count(id_completedsurvey) AS NumberOfCompletedSurveys FROM `completedsurvey` WHERE id_user = = %d"
+            cursor.execute(cmd, (user_id))
+            return cursor.fetchone()
+         except:
+            return False 
+			
+    def get_completedanswers_in_completedsurvey(self, completedsurvey_id):
+        # zwraca, id szablonu, id pytan, id odpoodpowiedzi dla wypelnionej ankiety
+        cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT * FROM `completedanswers` WHERE id_completedsurvey = %d"
+            cursor.execute(cmd,(completedsurvey_id))
+            return cursor.fetchone()
+         except:
+            return main.error_page()
