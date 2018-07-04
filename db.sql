@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 03 Lip 2018, 20:58
+-- Czas generowania: 04 Lip 2018, 19:31
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -186,6 +186,7 @@ CREATE TABLE `survey` (
 --
 
 INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`, `datetime`, `active`) VALUES
+(1, 1, 'ciekawa', '2018-07-04 19:15:47', 1),
 (2, 1, 'To jest nasza pierwsza ankieta', '2018-04-14 21:11:19', 1);
 
 -- --------------------------------------------------------
@@ -196,7 +197,7 @@ INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`, `datetime`, 
 
 CREATE TABLE `surveytemplate` (
   `id_surveytemplate` int(11) NOT NULL,
-  `id_survey` int(11) NOT NULL,
+  `id_survey` int(11) DEFAULT NULL,
   `id_question` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -361,6 +362,12 @@ ALTER TABLE `questiontags`
   MODIFY `id_questiontag` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT dla tabeli `survey`
+--
+ALTER TABLE `survey`
+  MODIFY `id_survey` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT dla tabeli `surveytemplate`
 --
 ALTER TABLE `surveytemplate`
@@ -386,7 +393,8 @@ ALTER TABLE `users`
 -- Ograniczenia dla tabeli `completedanswers`
 --
 ALTER TABLE `completedanswers`
-  ADD CONSTRAINT `completedanswers_ibfk_4` FOREIGN KEY (`id_completedsurvey`) REFERENCES `completedsurvey` (`id_completedsurvey`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `completedanswers_ibfk_4` FOREIGN KEY (`id_completedsurvey`) REFERENCES `completedsurvey` (`id_completedsurvey`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `completedanswers_ibfk_5` FOREIGN KEY (`id_answer`) REFERENCES `possibleanswers` (`id_answer`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ograniczenia dla tabeli `completedsurvey`
@@ -423,7 +431,7 @@ ALTER TABLE `survey`
 -- Ograniczenia dla tabeli `surveytemplate`
 --
 ALTER TABLE `surveytemplate`
-  ADD CONSTRAINT `surveytemplate_ibfk_2` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `surveytemplate_ibfk_1` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
