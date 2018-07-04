@@ -74,7 +74,7 @@ class database:
         # zwraca wszystkie aktywne do wypelnienia ankiety
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT * FROM `survey` where active = '1'"
+            cmd = "SELECT id_survey, survey_description, datetime FROM `survey` where active = '1'"
             cursor.execute(cmd)
             surveys = cursor.fetchall()
             return surveys
