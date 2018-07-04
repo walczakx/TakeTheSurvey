@@ -88,7 +88,8 @@ class database:
         try:
             cmd = "SELECT * FROM `survey` JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey JOIN questionbase ON surveytemplate.id_question = questionbase.id_question JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question WHERE survey.id_survey = %d"
             cursor.execute(cmd, (survey_id))
-            return cursor.fetchone()
+            survey = cursor.fetchall()
+            return survey
         except:
             # do something
             return

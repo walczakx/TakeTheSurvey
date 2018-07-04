@@ -113,8 +113,7 @@ def show_specific_survey(survey_id):
 	survey = main.get_survey(survey_id)
 	if survey:
 		if request.form['msg']:
-			return render_template('survey.html', survey = survey, msg = "Your survey was successfully added. You can see it below.")
-		return  render_template('survey.html', survey = survey)
+			return  render_template('survey.html', survey = survey)
 	else:
 		return main.error_page()
 
