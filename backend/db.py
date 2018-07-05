@@ -211,3 +211,14 @@ class database:
             return cursor.fetchone()
         except:
             return redirect(url_for('msg_page'))
+			
+	 def get_completed_surveys(self, user_id):
+        # zwraca wype³nione ankiety przez u¿ytownika (lista completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user)
+        cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user FROM `survey` left Join `completedsurvey` ON survey.id_survey = completedsurvey.id_survey WHERE completedsurvey.id_user = %d"
+            cursor.execute(cmd,(user_id))
+			completed_surveys = cursor.fetchall()
+            return completed_surveys
+        except:
+            return redirect(url_for('msg_page'))
