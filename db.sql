@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 04 Lip 2018, 19:31
+-- Czas generowania: 05 Lip 2018, 22:03
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -60,6 +60,7 @@ INSERT INTO `completedanswers` (`id_completedanswer`, `id_completedsurvey`, `id_
 CREATE TABLE `completedsurvey` (
   `id_completedsurvey` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
+  `id_survey` int(11) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -67,8 +68,8 @@ CREATE TABLE `completedsurvey` (
 -- Zrzut danych tabeli `completedsurvey`
 --
 
-INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_user`, `datetime`) VALUES
-(1, 1, '2018-04-20 08:16:10');
+INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_user`, `id_survey`, `datetime`) VALUES
+(1, 1, 2, '2018-07-05 20:02:08');
 
 -- --------------------------------------------------------
 
@@ -270,7 +271,8 @@ ALTER TABLE `completedanswers`
 --
 ALTER TABLE `completedsurvey`
   ADD PRIMARY KEY (`id_completedsurvey`),
-  ADD KEY `id_user` (`id_user`);
+  ADD KEY `id_user` (`id_user`),
+  ADD KEY `id_survey` (`id_survey`);
 
 --
 -- Indexes for table `possibleanswers`
@@ -400,7 +402,8 @@ ALTER TABLE `completedanswers`
 -- Ograniczenia dla tabeli `completedsurvey`
 --
 ALTER TABLE `completedsurvey`
-  ADD CONSTRAINT `completedsurvey_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `completedsurvey_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `completedsurvey_ibfk_2` FOREIGN KEY (`id_survey`) REFERENCES `survey` (`id_survey`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ograniczenia dla tabeli `possibleanswers`
