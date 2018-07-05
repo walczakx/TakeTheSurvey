@@ -11,7 +11,7 @@ class database:
         app.config['MYSQL_DATABASE_HOST'] = config.db_host
 
         self.mysql.init_app(app)
-        
+
     def mysql_connect(self):
         conn = self.mysql.connect()
         return conn.cursor()
@@ -64,8 +64,7 @@ class database:
             cursor.execute(cmd, (user_id,))
             return cursor.fetchone()
         except:
-            # do something
-            return
+            return redirect(url_for('msg_page'))
 
     def get_survey_list(self):
         # sql query
@@ -100,10 +99,7 @@ class database:
             cursor.execute(cmd, (question_description, id_question_type))
             return cursor.fetchone()
         except:
-            # do something
-            return
-
-
+            return redirect(url_for('msg_page'))
 
     def get_all_question_in_questionbase(self):
         # listuje wsyztkie pytania dostepne w bazie pytan
@@ -113,8 +109,7 @@ class database:
             cursor.execute(cmd)
             return cursor.fetchone()
         except:
-            # do something
-            return
+            return redirect(url_for('msg_page'))
 
     def get_question_from_questionbase_by_tag(self, tag_description):
         # listuje pytania po tagacah
@@ -147,7 +142,7 @@ class database:
             return cursor.fetchone()
         except:
             # do something
-            return
+            return redirect(url_for('msg_page'))
 
     def get_user_password(self, user_id):
         # zwraca has³o usera
@@ -157,7 +152,7 @@ class database:
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
          except:
-            return main.error_page()
+            return redirect(url_for('msg_page'))
 
     def get_survey_owner(self, survey_id):
          # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera który wypelnil ankiete
@@ -167,8 +162,8 @@ class database:
             cursor.execute(cmd, (survey_id))
             return cursor.fetchone()
          except:
-            return main.error_page()
-			
+            return redirect(url_for('msg_page'))
+
 	def get_survey_respondent(self, completedsurvey_id):
          # zwraca usera ktory wypelnil ankiete (respondenta)
 		cursor = self.mysql_connect()
@@ -177,7 +172,7 @@ class database:
             cursor.execute(cmd, (completedsurvey_id))
             return cursor.fetchone()
          except:
-            return main.error_page()
+            return redirect(url_for('msg_page'))
 
     def get_question_owner(self, survey_id):
         # TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
@@ -196,7 +191,7 @@ class database:
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
          except:
-            return False 
+            return False
 	def is_user_have_any_completed_surveys(self, user_id):
 	    #zwraca liczbe ankiet (wzorccow) usera
         cursor = self.mysql_connect()
@@ -205,8 +200,8 @@ class database:
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
          except:
-            return False 
-			
+            return False
+
     def get_completedanswers_in_completedsurvey(self, completedsurvey_id):
         # zwraca, id szablonu, id pytan, id odpoodpowiedzi dla wypelnionej ankiety
         cursor = self.mysql_connect()
@@ -215,4 +210,4 @@ class database:
             cursor.execute(cmd,(completedsurvey_id))
             return cursor.fetchone()
          except:
-            return main.error_page()
+            return redirect(url_for('msg_page'))

@@ -20,8 +20,8 @@ class main():
 
 	def do_the_register(self, username, email, password, conf_password):
 		if self.auth_.check_password(password, conf_password)\
-				and self.auth_.validate_email(email)\
-				and self.user_.check_if_username_is_free(username):
+                   and self.auth_.validate_email(email)\
+                   and self.user_.check_if_username_is_free(username):
 			return self.db_.user_register(username, email, password)
 		return False
 

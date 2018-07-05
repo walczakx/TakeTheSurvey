@@ -8,7 +8,7 @@ main_ = main.main(app)
 @app.route('/index')
 def index():
 	return render_template('index.html')
-	 
+ 
 @app.route('/register', methods=["POST"])
 def register():
 	assert request.path == '/register'
@@ -28,7 +28,7 @@ def login():
 	psw = main_.auth_.hash(request.form['psw'])
 
 	if main_.do_the_login(request.form['usrname'], psw, request.form['rememberme']):
-		return render_template('index.html', msg = "Success! You're now logged in")
+		return redirect(url_for('msg_page', msg = "Success! You're now logged in"))
 	return  redirect(url_for('msg_page'))
 
 @app.route('/logout', methods=["GET"])
@@ -54,7 +54,8 @@ def delete_user_account():
 
 	if main_.do_the_login(request.form['usrname'], psw):
 		main_.delete_account(request.form['usrname'])
-	return render_template('index.html', msg = "Your account was successfully deleted. So long.")
+		return redirect(url_for('msg_page', msg = "Your account was successfully deleted. So long."))
+	return redirect(url_for('msg_page')
 
 @app.route('/add_survey')
 def add_survey():
@@ -80,7 +81,7 @@ def edit_specific_survey(survey_id):
 def delete_survey(survey_id):
 	if has_admin_priviliges() or is_survey_owner(survey_id):
 		if main_.delete_survey(survey_id):
-			return render_template('index.html')
+			return redirect(url_for('show_survey'))
 	return redirect(url_for('msg_page'))
 
 @app.route('/add_question', methods=['POST'])
@@ -97,11 +98,9 @@ def edit_specific_question(question_id):
 
 @app.route('/delete_question/<question_id>')
 def delete_question(question_id):
-	try:
-		main_.delete_question(question_id)
-		return render_template('index.html')
-	except:
-		return redirect(url_for('msg_page'))
+	if main_.delete_question(question_id)
+		return redirect(url_for('show_questions'))
+	return redirect(url_for('msg_page'))
 
 @app.route('/show_survey')
 def show_survey():
@@ -115,18 +114,17 @@ def show_specific_survey(survey_id):
 		if request.form['msg']:
 			return render_template('survey.html', survey = survey, msg = "Your survey was successfully added. You can see it below.")
 		return  render_template('survey.html', survey = survey)
-	return redirect
+	return redirect(url_for('msg_page', msg = "Survey you're looking for, is non-available at the moment. Sorry for that")
 
 @app.route('/show_questions', methods=['GET'])
 def show_questions():
-	return render_template('questions.html', msg = request.form['msg']) #not sure it'll work
+	return render_template('questions.html', msg = request.args.get('msg'))
 
 @app.route('/msg', methods=['GET'])
 def msg_page():
 	if request.method == "GET" and request.args.get('msg'):
-		return render_template('error.html', msg = request.args.get('msg'))
-	else:
-		return render_template('error.html')
+		return redirect(url_for('msg_page', msg = request.args.get('msg')))
+	return redirect(url_for('msg_page'))
 
 
 #helper functions for templates
@@ -158,11 +156,11 @@ def is_user_have_surveys():
 
 
 app.jinja_env.globals.update(is_user_logged = is_user_logged,
-							 has_admin_priviliges = has_admin_priviliges,
-							 is_survey_owner = is_survey_owner,
-							 is_question_owner = is_question_owner,
-							 is_user_have_questions = is_user_have_questions,
-							 is_user_have_surveys = is_user_have_surveys)
+                             has_admin_priviliges = has_admin_priviliges,
+                             is_survey_owner = is_survey_owner,
+                             is_question_owner = is_question_owner,
+                             is_user_have_questions = is_user_have_questions,
+                              is_user_have_surveys = is_user_have_surveys)
 
 if __name__ == '__main__':
 	app.run()
