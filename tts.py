@@ -55,7 +55,7 @@ def delete_user_account():
 	if main_.do_the_login(request.form['usrname'], psw):
 		main_.delete_account(request.form['usrname'])
 		return redirect(url_for('msg_page', msg = "Your account was successfully deleted. So long."))
-	return redirect(url_for('msg_page')
+	return redirect(url_for('msg_page'))
 
 @app.route('/add_survey')
 def add_survey():
@@ -98,7 +98,7 @@ def edit_specific_question(question_id):
 
 @app.route('/delete_question/<question_id>')
 def delete_question(question_id):
-	if main_.delete_question(question_id)
+	if main_.delete_question(question_id):
 		return redirect(url_for('show_questions'))
 	return redirect(url_for('msg_page'))
 
@@ -114,7 +114,7 @@ def show_specific_survey(survey_id):
 		if request.form['msg']:
 			return render_template('survey.html', survey = survey, msg = "Your survey was successfully added. You can see it below.")
 		return  render_template('survey.html', survey = survey)
-	return redirect(url_for('msg_page', msg = "Survey you're looking for, is non-available at the moment. Sorry for that")
+	return redirect(url_for('msg_page', msg = "Survey you're looking for, is non-available at the moment. Sorry for that"))
 
 @app.route('/show_questions', methods=['GET'])
 def show_questions():

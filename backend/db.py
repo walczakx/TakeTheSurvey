@@ -145,33 +145,33 @@ class database:
             return redirect(url_for('msg_page'))
 
     def get_user_password(self, user_id):
-        # zwraca has³o usera
-		cursor = self.mysql_connect()
+        # zwraca haslo usera
+        cursor = self.mysql_connect()
         try:
             cmd = "SELECT  `pass` FROM `users` WHERE id_user = %d"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
-         except:
+        except:
             return redirect(url_for('msg_page'))
 
     def get_survey_owner(self, survey_id):
-         # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera który wypelnil ankiete
-		cursor = self.mysql_connect()
+        # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera ktory wypelnil ankiete
+        cursor = self.mysql_connect()
         try:
             cmd = "SELECT  `id_user` FROM `survey` WHERE id_survey = %d"
             cursor.execute(cmd, (survey_id))
             return cursor.fetchone()
-         except:
+        except:
             return redirect(url_for('msg_page'))
 
-	def get_survey_respondent(self, completedsurvey_id):
+    def get_survey_respondent(self, completedsurvey_id):
          # zwraca usera ktory wypelnil ankiete (respondenta)
-		cursor = self.mysql_connect()
+        cursor = self.mysql_connect()
         try:
             cmd = "SELECT  `id_user` FROM `completedsurvey` WHERE id_completedsurvey = %d"
             cursor.execute(cmd, (completedsurvey_id))
             return cursor.fetchone()
-         except:
+        except:
             return redirect(url_for('msg_page'))
 
     def get_question_owner(self, survey_id):
@@ -184,22 +184,22 @@ class database:
         return False #czy uzytkownik ma jakies swoje pytania?
 
     def is_user_have_any_surveys(self, user_id):
-	    #zwraca liczbe ankiet (wzorccow) usera
+        #zwraca liczbe ankiet (wzorccow) usera
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT  count(id_survey) AS NumberOfSurveys FROM `survey` WHERE id_user = %d"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
-         except:
+        except:
             return False
-	def is_user_have_any_completed_surveys(self, user_id):
-	    #zwraca liczbe ankiet (wzorccow) usera
+    def is_user_have_any_completed_surveys(self, user_id):
+        #zwraca liczbe ankiet (wzorccow) usera
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT  count(id_completedsurvey) AS NumberOfCompletedSurveys FROM `completedsurvey` WHERE id_user = = %d"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
-         except:
+        except:
             return False
 
     def get_completedanswers_in_completedsurvey(self, completedsurvey_id):
@@ -209,5 +209,5 @@ class database:
             cmd = "SELECT * FROM `completedanswers` WHERE id_completedsurvey = %d"
             cursor.execute(cmd,(completedsurvey_id))
             return cursor.fetchone()
-         except:
+        except:
             return redirect(url_for('msg_page'))
