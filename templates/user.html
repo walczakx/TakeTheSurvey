@@ -4,7 +4,13 @@
 
  <div class="container">
      
-placeholder for user panel. tbd
+				{% for d in user_data %}
+					<tr>
+					{% for d in row %}	
+						<td>{{ d }}</td>
+					{% endfor %}
+					</tr>
+				{% endfor %}
 
  </div>
 

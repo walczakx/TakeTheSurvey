@@ -51,10 +51,10 @@ class database:
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %d"
-            cursor.execute(cmd, (user_id,))
+            cursor.execute(cmd, (user_id))
             return cursor.fetchall()
         except:
-            return False
+            return redirect(url_for('msg_page'))
 
     def delete_account(self, user_id):
         # sql delete account
