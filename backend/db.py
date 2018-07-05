@@ -193,7 +193,7 @@ class database:
         except:
             return False
     def is_user_have_any_completed_surveys(self, user_id):
-        #zwraca liczbe ankiet (wzorccow) usera
+        #zwraca liczbe ankiet wypelnionych przez usera
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT  count(id_completedsurvey) AS NumberOfCompletedSurveys FROM `completedsurvey` WHERE id_user = = %d"
