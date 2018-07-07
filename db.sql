@@ -239,7 +239,7 @@ INSERT INTO `tags` (`id_tag`, `tag_description`) VALUES
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `login` varchar(25) NOT NULL,
-  `pass` varchar(25) NOT NULL,
+  `pass` varchar(40) NOT NULL,
   `email` varchar(50) NOT NULL,
   `Role` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -249,8 +249,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `login`, `pass`, `email`, `Role`) VALUES
-(1, 'login', 'login', 'email@email.com', 1),
-(2, 'login2', 'login2', 'login2@login1.com', 1);
+(1, 'login', 'e2774631c27c74b7338be9f90e7fb8ca', 'email@email.com', 1),
+(2, 'login2', '6f455ecc86fc466c76b58c3118e9fb3a', 'login2@login1.com', 1);
 
 --
 -- Indeksy dla zrzutów tabel

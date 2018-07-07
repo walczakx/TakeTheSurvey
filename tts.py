@@ -8,7 +8,8 @@ main_ = main.main(app)
 @app.route('/index')
 def index():
 	return render_template('index.html')
- 
+
+#works
 @app.route('/register', methods=["POST"])
 def register():
 	assert request.path == '/register'
@@ -19,8 +20,9 @@ def register():
 
 	if main_.do_the_register(request.form['usrname'], request.form['email'], psw, psw_c):
 		return redirect(url_for('msg_page', msg = "Great success! You can now log-in"))
-	return redirect(url_for('msg_page'))
+	return redirect(url_for('msg_page', msg = "Ops, can't register. Remember that:\n * username must contain at least 4 characters\n * username has to be unused<br> * password and password confirmation must be identical"))
 
+#works
 @app.route('/login', methods=["POST"])
 def login():
 	assert request.path == '/login'
@@ -29,8 +31,9 @@ def login():
 
 	if main_.do_the_login(request.form['usrname'], psw, request.form['rememberme']):
 		return redirect(url_for('msg_page', msg = "Success! You're now logged in"))
-	return  redirect(url_for('msg_page'))
+	return redirect(url_for('msg_page'))
 
+#works
 @app.route('/logout', methods=["GET"])
 def logout():
 	try:
@@ -39,6 +42,7 @@ def logout():
 		return redirect(url_for('msg_page'))
 	return redirect(url_for('msg_page', msg = "You're now logged off"))
 
+#works, template need to be done
 @app.route('/user_account', methods=["GET"])
 def user_account():
 	user_data = main_.get_user_data()
@@ -93,8 +97,9 @@ def add_question():
 
 @app.route('/edit_question/<question_id>',methods=['GET'])
 def edit_specific_question(question_id):
-	if main_.get_question(question_id) and (is_question_owner(question_id) or has_admin_priviliges()):
-		return render_template('question_edit.html')
+	question = main_.get_question(question_id)
+	if question and (is_question_owner(question_id) or has_admin_priviliges()):
+		return render_template('question_edit.html', question = question)
 
 @app.route('/delete_question/<question_id>')
 def delete_question(question_id):
@@ -102,6 +107,7 @@ def delete_question(question_id):
 		return redirect(url_for('show_questions'))
 	return redirect(url_for('msg_page'))
 
+#works
 @app.route('/show_survey')
 def show_survey():
 	surveys = main_.get_survey_list()
@@ -120,19 +126,22 @@ def show_specific_survey(survey_id):
 def show_questions():
 	return render_template('questions.html', msg = request.args.get('msg'))
 
-@app.route('/msg', methods=['GET'])
+#works
+@app.route('/msg', methods=['GET','POST'])
 def msg_page():
 	if request.method == "GET" and request.args.get('msg'):
-		return redirect(url_for('msg_page', msg = request.args.get('msg')))
-	return redirect(url_for('msg_page'))
+		return render_template('error.html', msg = request.args.get('msg'))
+	return render_template('error.html')
 
 
-#helper functions for templates
+#helper functions for templates, all done
 def is_user_logged():
 	return main_.is_user_logged()
 
 def has_admin_priviliges():
-	return main_.user_.has_admin_privileges(main_.get_logged_user_privileges())
+	if main_.is_user_logged():
+		return main_.has_admin_privileges()
+	return False
 
 def is_survey_owner(survey_id):
 	if main_.is_user_logged():
@@ -160,7 +169,7 @@ app.jinja_env.globals.update(is_user_logged = is_user_logged,
                              is_survey_owner = is_survey_owner,
                              is_question_owner = is_question_owner,
                              is_user_have_questions = is_user_have_questions,
-                              is_user_have_surveys = is_user_have_surveys)
+                             is_user_have_surveys = is_user_have_surveys)
 
 if __name__ == '__main__':
 	app.run()

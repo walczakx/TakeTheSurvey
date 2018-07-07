@@ -7,9 +7,11 @@ class auth():
         return False
 
     def validate_email(self, email):
-        # TODO if email contain @ and .
-        return True
+        return "@" in email and "." in email and len(email) >= 6
 
+    def validate_username(self, username):
+        return len(username) >= 4
+    
     def hash(self, string):
         return hashlib.md5(
             string + "secret_salt^^string").hexdigest()

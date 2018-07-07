@@ -3,7 +3,7 @@ from flaskext.mysql import MySQL
 
 class database:
     def __init__(self, app, config):
-        self.mysql = MySQL(app)
+        self.mysql = MySQL()
 
         app.config['MYSQL_DATABASE_USER'] = config.db_username
         app.config['MYSQL_DATABASE_PASSWORD'] = config.db_pass
@@ -11,50 +11,73 @@ class database:
         app.config['MYSQL_DATABASE_HOST'] = config.db_host
 
         self.mysql.init_app(app)
+        self.conn = None
 
     def mysql_connect(self):
-        conn = self.mysql.connect()
-        return conn.cursor()
+        self.conn = self.mysql.connect()
+        return self.conn.cursor()
 
+    def mysql_finalize(self):
+        self.conn.commit()
+        self.conn.close()
+
+    # works
     def get_user_id(self, username):
         cursor = self.mysql_connect()
         try:
             cmd = "select id_user from users where login = %s"
-            cursor.execute(cmd, (username,))
-            return cursor.fetchone()
+            cursor.execute(cmd, (username))
+            return cursor.fetchone()[0]
         except:
             return redirect(url_for('msg_page'))
 
+    #works
     def user_register(self, username, email, password):
-        # some sql, if succes, return true
         cursor = self.mysql_connect()
         try:
             cmd = "INSERT INTO `users`( `login`, `pass`, `email`) VALUES (%s,%s,%s)"
             cursor.execute(cmd, (username, password, email))
+            return True
         except:
             return False
-        return True
+        finally:
+            self.mysql_finalize()
 
+    #works
     def check_if_username_is_free(self, username):
-        # if select username from users where username = username is null
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_user FROM `users` WHERE login = %s"
-            cursor.execute(cmd, (username,))
-            return cursor.fetchone()
+            cursor.execute(cmd, (username))
+            return cursor.fetchone() is None
         except:
-            # do something
-            return
+            return False
+        finally:
+            self.mysql_finalize()
 
     def get_user_data(self, user_id):
         # need to select user data from sql na parse it to some dictionary {"username": row[0], "email": row[1] } etc
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %d"
+            cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %s"
             cursor.execute(cmd, (user_id))
             return cursor.fetchall()
         except:
             return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
+
+    #works
+    def get_user_privileges(self, user_id):
+        cursor = self.mysql_connect()
+        try:
+            cmd = "select role from `users` where id_user = %s"
+            cursor.execute(cmd, (user_id))
+            return cursor.fetchone()[0]
+        except:
+            return False
+        finally:
+            self.mysql_finalize()
 
     def delete_account(self, user_id):
         # sql delete account
@@ -65,20 +88,20 @@ class database:
             return cursor.fetchone()
         except:
             return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
 
     def get_survey_list(self):
-        # sql query
-        # jakos to trzeba zwrocic, zrob tak aby bylo dobrze:)
         # zwraca wszystkie aktywne do wypelnienia ankiety
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_survey, survey_description, datetime FROM `survey` where active = '1'"
             cursor.execute(cmd)
-            surveys = cursor.fetchall()
-            return surveys
+            return cursor.fetchall()
         except:
-            # do something
-            return
+            return False
+        finally:
+            self.mysql_finalize()
 
     def get_specific_survey(self, survey_id):
         # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
@@ -87,9 +110,10 @@ class database:
             cmd = "SELECT * FROM `survey` JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey JOIN questionbase ON surveytemplate.id_question = questionbase.id_question JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question WHERE survey.id_survey = %d"
             cursor.execute(cmd, (survey_id))
             return cursor.fetchall()
-
         except:
             return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
 
     def add_question_to_questionbase(self, question_description, id_question_type):
         # dodaje pytanie do bazy pytan wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
@@ -144,15 +168,17 @@ class database:
             # do something
             return redirect(url_for('msg_page'))
 
+    #works
     def get_user_password(self, user_id):
-        # zwraca haslo usera
         cursor = self.mysql_connect()
+        cmd = "SELECT `pass` FROM `users` WHERE id_user = %s"
         try:
-            cmd = "SELECT  `pass` FROM `users` WHERE id_user = %d"
             cursor.execute(cmd, (user_id))
-            return cursor.fetchone()
+            return cursor.fetchone()[0]
         except:
-            return redirect(url_for('msg_page'))
+            return False
+        finally:
+            self.mysql_finalize()
 
     def get_survey_owner(self, survey_id):
         # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera ktory wypelnil ankiete
@@ -176,12 +202,11 @@ class database:
 
     def get_question_owner(self, survey_id):
         # TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
-        owner_id = 1
-        return owner_id
+        return False
 
     def is_user_have_any_questions(self, user_id):
         #TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
-        return False #czy uzytkownik ma jakies swoje pytania?
+        return False
 
     def is_user_have_any_surveys(self, user_id):
         #zwraca liczbe ankiet (wzorccow) usera
@@ -211,14 +236,26 @@ class database:
             return cursor.fetchone()
         except:
             return redirect(url_for('msg_page'))
-			
-	 def get_completed_surveys(self, user_id):
-        # zwraca wype³nione ankiety przez u¿ytownika (lista completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user)
+
+    def get_completed_surveys(self, user_id):
+        # zwraca wypelnione ankiety przez uzytownika (lista completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user)
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user FROM `survey` left Join `completedsurvey` ON survey.id_survey = completedsurvey.id_survey WHERE completedsurvey.id_user = %d"
             cursor.execute(cmd,(user_id))
-			completed_surveys = cursor.fetchall()
+            completed_surveys = cursor.fetchall()
             return completed_surveys
         except:
             return redirect(url_for('msg_page'))
+
+    def delete_question(self, question_id):
+        #todo admin usuwa pytanie z bazy
+        pass
+
+    def get_question_from_questionbase_by_id(self, question_id):
+        #todo dej no pytanie z bazy wraz z odpowiedziami
+        pass
+
+    def  get_correct_answer_for_specific_question(self, question_id):
+        #todo, nie jestem przekonany czy bedzie potrzebne
+        pass

@@ -6,9 +6,6 @@ class user():
     def try_to_login(self, user_id, psw):
         return self.db_.get_user_password(user_id) == psw
 
-    def has_admin_privileges(self, privileges):
-        return privileges == "admin"
-
     def get_user_id(self, username):
         return self.db_.get_user_id(username)
 
