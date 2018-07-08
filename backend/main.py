@@ -1,4 +1,4 @@
-from flask import session, render_template
+from flask import session, render_template, redirect, url_for
 from backend import user, db, auth, config
 
 class main():
@@ -11,6 +11,9 @@ class main():
 	def do_the_login(self, username, password, rememberme):
 		if self.user_.try_to_login(self.user_.get_user_id(username), password):
 			session['username'] = username
+			session['question_counter'] = 0
+			session['question_list'] = []
+			session['survey_name'] = ""
 			return True
 		return False
 
@@ -48,8 +51,22 @@ class main():
 	def delete_survey(self, survey_id):
 		return True #self.db_.delete_survey()  ## todo check if exist
 
-	def add_question(self):
-		# todo, verification etc
+	def add_question_to_new_survey(self, question_id):
+		if self.is_user_logged():
+			session['question_counter'] += 1
+		else:
+			return redirect(url_for('msg_page()', msg = 'You need to sing-in first'))
+
+		if question_id not in session.get('question_list'):
+			temp_list = session.get('question_list')
+			session.pop('question_list', None)
+			temp_list.append(question_id)
+			session['question_list'] = temp_list
+			return True
+		return False
+
+	def add_question_to_database(self):
+		# todo, verification etc 
 		return True # self.db_add_question()
 
 	def get_logged_user_id(self):
@@ -61,7 +78,31 @@ class main():
 	def get_question(self, question_id):
 		return self.db_.get_question_from_questionbase_by_id(question_id)
 
+	def get_answers_to_questions(self, question_id):
+		d =  self.db_.get_possible_answers(question_id)
+		print d
+		return d
+
+	def get_question_list(self):
+		return self.db_.get_all_question_in_questionbase()
+
 	def delete_question(self, question_id):
 		if self.is_user_logged() and self.has_admin_privileges():
 			return self.db_.delete_question(question_id)
 		return False
+
+	def get_saved_questions(self):
+		counter = session.get('question_counter')
+		name = session.get('survey_name')
+
+		if counter == 0 or not name:
+			return None
+
+		saved_questions = None
+
+		for i in range(0, counter):
+			q = 'question' + str(i)
+			a = session.get(q)
+			saved_questions.append(a)
+			print a
+

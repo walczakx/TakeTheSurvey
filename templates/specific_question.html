@@ -1,0 +1,25 @@
+
+ <br /> show all questions<br />
+
+ {% if msg %} {{ msg }} kajdslkfjdslk {% endif %}
+
+
+ Opcje do zaimplementowania: dodaj do nowej ankiety (add to session), pokaz szczegoły, dla admina/ownera: edytuj, usun
+
+<table>
+{% for row in question %}
+    <tr>
+    {% for d in row %}
+        <td>{{ d }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+
+    {% for row in answers %}
+    <tr>
+    {% for d in row %}
+        <td>{{ d }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>

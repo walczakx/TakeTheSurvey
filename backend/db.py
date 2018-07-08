@@ -107,12 +107,22 @@ class database:
         # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT * FROM `survey` JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey JOIN questionbase ON surveytemplate.id_question = questionbase.id_question JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question WHERE survey.id_survey = %d"
+            print "try"
+            print survey_id
+            cmd = "SELECT * FROM `survey` " \
+                  "JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey " \
+                  "JOIN questionbase ON surveytemplate.id_question = questionbase.id_question " \
+                  "JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question " \
+                  "WHERE survey.id_survey = %s"
             cursor.execute(cmd, (survey_id))
-            return cursor.fetchall()
+            d = cursor.fetchall()
+            print d
+            return d
         except:
+            print "except"
             return redirect(url_for('msg_page'))
         finally:
+            print "finally"
             self.mysql_finalize()
 
     def add_question_to_questionbase(self, question_description, id_question_type):
@@ -125,15 +135,15 @@ class database:
         except:
             return redirect(url_for('msg_page'))
 
+    #works
     def get_all_question_in_questionbase(self):
-        # listuje wsyztkie pytania dostepne w bazie pytan
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT * FROM `questionbase`"
             cursor.execute(cmd)
-            return cursor.fetchone()
+            return cursor.fetchall()
         except:
-            return redirect(url_for('msg_page'))
+            return False
 
     def get_question_from_questionbase_by_tag(self, tag_description):
         # listuje pytania po tagacah
@@ -146,16 +156,16 @@ class database:
             # do something
             return
 
+    #works
     def get_possible_answers(self, id_question):
         # zwraca mozliwe odpowiedzi dla pytania
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT `id_answer`, `id_question`, `answerdescription` FROM `possibleanswers` WHERE id_question = %d"
-            cursor.execute(cmd, (id_question, ))
-            return cursor.fetchone()
+            cmd = "SELECT `id_answer`, `id_question`, `answerdescription` FROM `possibleanswers` WHERE id_question = %s"
+            cursor.execute(cmd, (id_question))
+            return cursor.fetchall()
         except:
-            # do something
-            return
+            return False
 
     def add_possible_answers(self, id_question, answerdescription):
         # dodaje mozliwe odpowiedzi do pytania
@@ -253,8 +263,13 @@ class database:
         pass
 
     def get_question_from_questionbase_by_id(self, question_id):
-        #todo dej no pytanie z bazy wraz z odpowiedziami
-        pass
+        cursor = self.mysql_connect()
+        try:
+            cmd = "SELECT * FROM `questionbase` where id_question = %s"
+            cursor.execute(cmd, (question_id))
+            return cursor.fetchall()
+        except:
+            return False
 
     def  get_correct_answer_for_specific_question(self, question_id):
         #todo, nie jestem przekonany czy bedzie potrzebne

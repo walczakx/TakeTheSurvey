@@ -1,12 +1,10 @@
 
  <br /> show specific survey
 
-     {% for question in survey %}
- </br>    pokaz kazde pytanie
-     {% endfor %}
+ {% if msg %} {{ msg }} kajdslkfjdslk {% endif %}
 
 
- <div>
+<table>
 {% for row in survey %}
     <tr>
     {% for d in row %}
@@ -14,4 +12,4 @@
     {% endfor %}
     </tr>
 {% endfor %}
-</div>
+</table>

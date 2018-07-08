@@ -1,30 +1,35 @@
 <div class="row">
 		        
         <div class="col-md-12">
-        <h4>Available surveys</h4>
+        <h4>Available questions</h4>
         <div class="table-responsive">
             
               <table id="mytable" class="table table-bordred table-striped">
                    <thead>
-                   <th>Survey desription</th>
-                   <th>Date</th>
+                   <th>Question</th>
 				   <th>Show details</th>
-				   {% if is_user_have_surveys() %}
+				   {% if has_admin_priviliges() %}
 				   	<th>Edit</th>
                    	<th>Delete</th>
 				   {% endif %}
                    </thead>
      <tbody>
 				<div>
-					{% for row in surveys %}
+					{% for row in questions %}
 					<tr>							
 						<td>{{ row[1] }}</td>
-						<td>{{ row[2] }}</td>
 						<td><p data-placement="top" data-toggle="tooltip" title="Show">
-							<a href="./show_survey/{{ row[0] }}">
+							<a href="./show_questions/{{ row[0] }}">
 							<button class="btn btn-primary btn-xs" data-title="Show" data-toggle="modal" data-target="#show">
-								<span class="glyphicon glyphicon-th-list"></span></button> Fill out this survey</a></p></td>
-						{% if is_survey_owner(row[0]) or has_admin_priviliges() %}
+								<span class="glyphicon glyphicon-th-list"></span></button> Show details</a></p></td>
+
+						<td><p data-placement="top" data-toggle="tooltip" title="Add to new survey">
+							<a href="./add_to_survey/{{ row[0] }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >
+								<span class="glyphicon glyphicon-pencil"></span></button> Add to new survey</a></p></td>
+
+						{% if has_admin_priviliges() %}
+
+
 						<td><p data-placement="top" data-toggle="tooltip" title="Edit">
 							<a href="./edit/{{ row[0] }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" >
 								<span class="glyphicon glyphicon-pencil"></span></button> Edit</a></p></td>
