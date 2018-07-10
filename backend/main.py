@@ -13,7 +13,6 @@ class main():
 			session['username'] = username
 			session['question_counter'] = 0
 			session['question_list'] = []
-			session['survey_name'] = ""
 			return True
 		return False
 
@@ -27,6 +26,10 @@ class main():
 
 	def logout(self):
 		session.pop('username', None)
+		session.pop('question_list', None)
+		session.pop('question_counter', None)
+		session.pop('survey_name', None)
+		return redirect(url_for('msg_page', msg = "You've been logged out"))
 
 	def is_user_logged(self):
 		return 'username' in session
@@ -52,18 +55,21 @@ class main():
 		return True #self.db_.delete_survey()  ## todo check if exist
 
 	def add_question_to_new_survey(self, question_id):
-		if self.is_user_logged():
-			session['question_counter'] += 1
-		else:
-			return redirect(url_for('msg_page()', msg = 'You need to sing-in first'))
+		if not self.is_user_logged():
+			return self.logout()
 
-		if question_id not in session.get('question_list'):
-			temp_list = session.get('question_list')
-			session.pop('question_list', None)
-			temp_list.append(question_id)
-			session['question_list'] = temp_list
-			return True
-		return False
+		a = session.get('question_list')
+		print "adding: before" + str(a)
+		if a is None:
+			a = []
+
+		if question_id not in a:
+			a.append(question_id)
+			session['question_list'] = a
+		else:
+			return False
+		print "adding: after" + str(session.get('question_list'))
+		return True
 
 	def add_question_to_database(self):
 		# todo, verification etc 
@@ -92,17 +98,17 @@ class main():
 		return False
 
 	def get_saved_questions(self):
-		counter = session.get('question_counter')
+		print "get: before list: " + str(session.get('question_list'))
+		print "get: before login: " + str(session.get('username'))
+
 		name = session.get('survey_name')
+		questions = session.get('question_list')
 
-		if counter == 0 or not name:
-			return None
+		saved_questions = []
 
-		saved_questions = None
+		for i in questions:
+			saved_questions.append(i)
+			print i
 
-		for i in range(0, counter):
-			q = 'question' + str(i)
-			a = session.get(q)
-			saved_questions.append(a)
-			print a
-
+		return [saved_questions, name]
+	

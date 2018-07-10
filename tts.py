@@ -4,6 +4,7 @@ import backend.main as main
 app = Flask(__name__)
 main_ = main.main(app)
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -65,14 +66,14 @@ def add_survey():
 	questions = main_.get_saved_questions()
 
 	if questions:
-		return render_template('survey_add_new.html', questions = questions)
+		return render_template('survey_add_new.html', questions = questions[0], name = questions[1])
 	return render_template('survey_add_new.html')
 
 @app.route('/add_to_survey/<question_id>')
 def add_question_to_survey(question_id):
-	main_.add_question_to_new_survey(question_id)
-
-	return redirect(url_for('show_questions'))
+	if main_.add_question_to_new_survey(question_id):
+		return redirect(url_for('show_questions', msg = "Question " + str(question_id) + " was successfully added to new survey"))
+	return redirect(url_for('show_questions', msg = "Can't add question to survey. Reason unknown.\nRemeber that you can't add same question twice\n\n"))
 
 # todo
 @app.route('/create',methods=['GET','POST'])
@@ -120,7 +121,7 @@ def delete_question(question_id):
 		return redirect(url_for('show_questions'))
 	return redirect(url_for('msg_page'))
 
-@app.route('/show_survey')
+@app.route('/show_survey', methods = ['GET'])
 def show_survey():
 	return render_template('survey.html', surveys = main_.get_survey_list())
 
@@ -133,10 +134,10 @@ def show_specific_survey(survey_id):
 		return render_template('survey.html', survey = survey)
 	return redirect(url_for('msg_page', msg = "Survey you're looking for, is non-available at the moment. Sorry for that"))
 
-@app.route('/show_questions')
+@app.route('/show_questions', methods = ['GET'])
 def show_questions():
 	question = main_.get_question_list()
-	return render_template('questions.html', questions = question)
+	return render_template('questions.html', questions = question, msg = request.args.get('msg'))
 
 @app.route('/show_questions/<question_id>')
 def show_question(question_id):

@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+ <br /> Creating new survey. Below are question you selected in questions section. Type survey name and you're good to go<br />
+<div>
+ {% if msg %} {{ msg }} {% endif %}
+</div>
+
+<table>
+{% for row in questions %}
+    <tr>
+  {{ row }} --delete from survey-- --show details--<br/>
+    </tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
