@@ -1,15 +1,35 @@
-
- <br /> show specific survey
-
  {% if msg %} {{ msg }} kajdslkfjdslk {% endif %}
 
+<div class="row">
+		        
+        <div class="col-md-12">
+        <h4>{{survey[0][2]}} created: {{survey[0][3]}} </h4>
+  
+<div>
 
-<table>
+<br>{{ survey[0][9]}}</br>
+
 {% for row in survey %}
-    <tr>
-    {% for d in row %}
-        <td>{{ d }}</td>
-    {% endfor %}
-    </tr>
+    
+   
+	{% if (survey[loop.index0][9] in survey[loop.index0-1][9] and loop.index0>0) or (loop.index0==0) %}
+        <br>{{row[13]}}</br>
+	
+	
+	{% else %}
+	
+	<br>{{ row[9]}}</br>
+	
+	{% endif %}
+   
+  
 {% endfor %}
-</table>
+
+
+	 
+        
+
+
+</div>
+</div>
+</div>
