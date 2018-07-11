@@ -308,11 +308,33 @@ class database:
             return redirect(url_for('msg_page'))
 
     def add_completed_answers_for_completed_survey(self, id_surveytemplate, id_question, id_answer):
-        # dodaje odpowiedzi wypelnionej ankiety  (uzupelnia tabele completedanswers) # add_completed_survey i add_completed_answers_for_completed_survey nalezy wywolac w momencie submit ( w podanej kolejnosci) # add_completed_answers_for_completed_survey nalezy wywolac dla kazdej dodwanej odpowiedzi # add_completed_survey dla ankiety trzeba wykonac tylko raz na samym poczatku po submit
+        # todo, dodaje odpowiedzi wypelnionej ankiety  (uzupelnia tabele completedanswers) # add_completed_survey i add_completed_answers_for_completed_survey nalezy wywolac w momencie submit ( w podanej kolejnosci) # add_completed_answers_for_completed_survey nalezy wywolac dla kazdej dodwanej odpowiedzi # add_completed_survey dla ankiety trzeba wykonac tylko raz na samym poczatku po submit
         cursor = self.mysql_connect()
         try:
             cmd = "INSERT INTO `completedanswers` (id_surveytemplate, id_question, id_answer, id_completedsurvey) VALUES (%d, %d, %d, (SELECT MAX(id_completedsurvey) from `completedsurvey` ))"
             cursor.execute(cmd, (id_surveytemplate, id_question, id_answer))
+            return cursor.fetchone()
+        except:
+            # do something
+            return redirect(url_for('msg_page'))
+
+    def add_survey(self, id_user, survey_description):
+        # tworzy nowa ankiete bez pytan sam "kontener"
+        cursor = self.mysql_connect()
+        try:
+            cmd = "INSERT INTO `survey`(`id_user`, `survey_description`) VALUES (%d, %s)"
+            cursor.execute(cmd, (id_user, survey_description))
+            return cursor.fetchone()
+        except:
+            # do something
+            return redirect(url_for('msg_page'))
+			
+    def add_surveytemplate(self, id_survey, id_question):
+        # dodaje pytania do szablonu utworzonej ankiety (tej ktora zostala utworzona za pomoca add_survey)
+        cursor = self.mysql_connect()
+        try:
+            cmd = "INSERT INTO `surveytemplate`(`id_survey`, `id_question`) VALUES (%d, %d)"
+            cursor.execute(cmd, (id_survey, id_question))
             return cursor.fetchone()
         except:
             # do something
