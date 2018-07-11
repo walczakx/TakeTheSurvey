@@ -64,25 +64,26 @@ def delete_user_account():
 @app.route('/add_survey')
 def add_survey():
 	questions = main_.get_saved_questions()
+	name = main_.get_survey_name()
 
 	if questions:
-		return render_template('survey_add_new.html', questions = questions[0], name = questions[1])
-	return render_template('survey_add_new.html')
+		return render_template('survey_add_new.html', questions = questions, name = name)
+	return render_template('survey_add_new.html', name = name)
 
 @app.route('/add_to_survey/<question_id>')
 def add_question_to_survey(question_id):
 	if main_.add_question_to_new_survey(question_id):
-		return redirect(url_for('show_questions', msg = "Question " + str(question_id) + " was successfully added to new survey"))
-	return redirect(url_for('show_questions', msg = "Can't add question to survey. Reason unknown.\nRemeber that you can't add same question twice\n\n"))
+		return redirect(url_for('show_questions', msg = "Question \"" + str(main_.get_question(question_id)[0][1]) + "\" was successfully added to new survey"))
+	return redirect(url_for('show_questions', msg = "Can't add question to survey. Remeber that you can't add same question twice"))
 
-# todo
-@app.route('/create',methods=['GET','POST'])
+@app.route('/create',methods=['POST'])
 def create_new_survey():
-	try:
-		survey_id = main_.create_survey()
-		return redirect(url_for('show_specific_survey', survey_id = survey_id, msg = "Success"))
-	except:
-		return redirect(url_for('msg_page', msg = "Success"))
+	questions = main_.get_saved_questions()
+	name = main_.get_survey_name()
+
+	if main_.create_survey(questions, name):
+		return redirect(url_for('show_survey'))
+	return redirect(url_for('msg_page'))
 
 # todo
 @app.route('/edit/<survey_id>')
@@ -153,6 +154,18 @@ def msg_page():
 	if request.method == "GET" and request.args.get('msg'):
 		return render_template('error.html', msg = request.args.get('msg'))
 	return render_template('error.html')
+
+@app.route('/set_new_survey_name', methods=['GET'])
+def set_survey_name():
+	if main_.set_survey_name(request.args.get('name')):
+		return redirect(url_for('add_survey'))
+	return redirect(url_for('msg_page'))
+
+@app.route('/question_delete/<question_id>')
+def question_delete(question_id):
+	if main_.delete_question_from_survey(question_id):
+		return redirect(url_for('add_survey'))
+	return redirect(url_for('msg_page'))
 
 #helper functions for templates, all done
 def is_user_logged():

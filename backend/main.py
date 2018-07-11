@@ -47,9 +47,9 @@ class main():
 	def get_survey(self, survey_id):
 		return self.db_.get_specific_survey(survey_id)
 
-	def create_survey(self):
+	def create_survey(self, questions, name):
 		#todo
-		return 1
+		return True
 
 	def delete_survey(self, survey_id):
 		return True #self.db_.delete_survey()  ## todo check if exist
@@ -97,18 +97,39 @@ class main():
 			return self.db_.delete_question(question_id)
 		return False
 
+	def set_survey_name(self, name):
+		if not self.is_user_logged():
+			return self.logout()
+
+		if self.auth_.validate_username(name):
+			print 'true'
+			session['survey_name'] = name
+			return True
+		return False
+
 	def get_saved_questions(self):
-		print "get: before list: " + str(session.get('question_list'))
-		print "get: before login: " + str(session.get('username'))
-
-		name = session.get('survey_name')
 		questions = session.get('question_list')
-
 		saved_questions = []
 
 		for i in questions:
-			saved_questions.append(i)
-			print i
+			saved_questions.append(self.db_.get_specific_question_name(i))
 
-		return [saved_questions, name]
-	
+		if len(saved_questions) == 0:
+			return None
+		return saved_questions
+
+	def get_survey_name(self):
+		return session.get('survey_name')
+
+	def delete_question_from_survey(self, question_id):
+		if not self.is_user_logged():
+			return self.logout()
+
+		a = session.get('question_list')
+
+		if question_id in a:
+			a.remove(question_id)
+			session['question_list'] = a
+		else:
+			return False
+		return True

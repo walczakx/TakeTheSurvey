@@ -2,10 +2,11 @@
 
 {% block content %}
 
-<div>
-    {%if msg %} {{ msg }} {% endif %}
+{% if msg %}
+<div class="alert alert-info">
+{{ msg }}
 </div>
-
+{% endif %}
  <div class="container">
 
   {% if question and answers %}

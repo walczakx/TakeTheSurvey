@@ -104,6 +104,17 @@ class database:
         finally:
             self.mysql_finalize()
 
+    def get_specific_question_name(self, survey_id):
+        cursor = self.mysql_connect()
+        try:
+            cmd = "select * from `questionbase` where id_question = %s"
+            cursor.execute(cmd, (survey_id))
+            return  cursor.fetchall()[0]
+        except:
+            return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
+
     def get_specific_survey(self, survey_id):
         # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
         cursor = self.mysql_connect()
