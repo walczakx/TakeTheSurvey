@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 05 Lip 2018, 22:03
+-- Czas generowania: 11 Lip 2018, 23:32
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `completedanswers` (
   `id_completedanswer` int(11) NOT NULL,
-  `id_completedsurvey` int(11) NOT NULL,
+  `id_completedsurvey` int(11) DEFAULT NULL,
   `id_surveytemplate` int(11) NOT NULL,
   `id_question` int(11) NOT NULL,
   `id_answer` int(11) NOT NULL
@@ -49,7 +49,9 @@ INSERT INTO `completedanswers` (`id_completedanswer`, `id_completedsurvey`, `id_
 (6, 1, 5, 3, 8),
 (7, 1, 5, 3, 9),
 (8, 1, 6, 4, 10),
-(9, 1, 6, 4, 11);
+(9, 1, 6, 4, 11),
+(11, 1, 2, 1, 1),
+(12, 1, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -59,7 +61,7 @@ INSERT INTO `completedanswers` (`id_completedanswer`, `id_completedsurvey`, `id_
 
 CREATE TABLE `completedsurvey` (
   `id_completedsurvey` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
+  `id_user` int(11) DEFAULT NULL,
   `id_survey` int(11) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -239,7 +241,7 @@ INSERT INTO `tags` (`id_tag`, `tag_description`) VALUES
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `login` varchar(25) NOT NULL,
-  `pass` varchar(40) NOT NULL,
+  `pass` varchar(25) NOT NULL,
   `email` varchar(50) NOT NULL,
   `Role` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -249,8 +251,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `login`, `pass`, `email`, `Role`) VALUES
-(1, 'login', 'e2774631c27c74b7338be9f90e7fb8ca', 'email@email.com', 1),
-(2, 'login2', '6f455ecc86fc466c76b58c3118e9fb3a', 'login2@login1.com', 1);
+(1, 'login', 'login', 'email@email.com', 1),
+(2, 'login2', 'login2', 'login2@login1.com', 1);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -337,13 +339,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT dla tabeli `completedanswers`
 --
 ALTER TABLE `completedanswers`
-  MODIFY `id_completedanswer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_completedanswer` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT dla tabeli `completedsurvey`
 --
 ALTER TABLE `completedsurvey`
-  MODIFY `id_completedsurvey` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_completedsurvey` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT dla tabeli `possibleanswers`
