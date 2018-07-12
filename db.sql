@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 12 Lip 2018, 23:49
+-- Czas generowania: 13 Lip 2018, 00:47
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -33,25 +33,27 @@ CREATE TABLE `completedanswers` (
   `id_completedsurvey` int(11) DEFAULT NULL,
   `id_surveytemplate` int(11) NOT NULL,
   `id_question` int(11) NOT NULL,
-  `id_answer` int(11) NOT NULL
+  `id_answer` int(11) NOT NULL,
+  `question_description` varchar(250) NOT NULL,
+  `answer_description` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `completedanswers`
 --
 
-INSERT INTO `completedanswers` (`id_completedanswer`, `id_completedsurvey`, `id_surveytemplate`, `id_question`, `id_answer`) VALUES
-(1, 1, 2, 1, 1),
-(2, 1, 4, 2, 4),
-(3, 1, 4, 2, 5),
-(4, 1, 5, 3, 6),
-(5, 1, 5, 3, 7),
-(6, 1, 5, 3, 8),
-(7, 1, 5, 3, 9),
-(8, 1, 6, 4, 10),
-(9, 1, 6, 4, 11),
-(11, 1, 2, 1, 1),
-(12, 1, 2, 1, 1);
+INSERT INTO `completedanswers` (`id_completedanswer`, `id_completedsurvey`, `id_surveytemplate`, `id_question`, `id_answer`, `question_description`, `answer_description`) VALUES
+(1, 1, 2, 1, 1, '', ''),
+(2, 1, 4, 2, 4, '', ''),
+(3, 1, 4, 2, 5, '', ''),
+(4, 1, 5, 3, 6, '', ''),
+(5, 1, 5, 3, 7, '', ''),
+(6, 1, 5, 3, 8, '', ''),
+(7, 1, 5, 3, 9, '', ''),
+(8, 1, 6, 4, 10, '', ''),
+(9, 1, 6, 4, 11, '', ''),
+(11, 1, 2, 1, 1, '', ''),
+(12, 1, 2, 1, 1, '', '');
 
 -- --------------------------------------------------------
 
@@ -63,6 +65,7 @@ CREATE TABLE `completedsurvey` (
   `id_completedsurvey` int(11) NOT NULL,
   `id_user` int(11) DEFAULT NULL,
   `id_survey` int(11) NOT NULL,
+  `survey_description` varchar(250) DEFAULT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -70,8 +73,8 @@ CREATE TABLE `completedsurvey` (
 -- Zrzut danych tabeli `completedsurvey`
 --
 
-INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_user`, `id_survey`, `datetime`) VALUES
-(1, 1, 2, '2018-07-05 20:02:08');
+INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_user`, `id_survey`, `survey_description`, `datetime`) VALUES
+(1, 1, 2, NULL, '2018-07-05 20:02:08');
 
 -- --------------------------------------------------------
 
@@ -82,27 +85,28 @@ INSERT INTO `completedsurvey` (`id_completedsurvey`, `id_user`, `id_survey`, `da
 CREATE TABLE `possibleanswers` (
   `id_answer` int(11) NOT NULL,
   `id_question` int(11) NOT NULL,
-  `answerdescription` varchar(250) NOT NULL
+  `answerdescription` varchar(250) NOT NULL,
+  `active` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `possibleanswers`
 --
 
-INSERT INTO `possibleanswers` (`id_answer`, `id_question`, `answerdescription`) VALUES
-(1, 1, 'TAK'),
-(3, 1, 'NIE'),
-(4, 2, '0'),
-(5, 2, '1'),
-(6, 3, '0'),
-(7, 3, '1'),
-(8, 3, '2'),
-(9, 3, '3'),
-(10, 4, 'NIC'),
-(11, 4, 'WSZYSTKO'),
-(12, 4, 'CZESC'),
-(13, 10, 'OK'),
-(14, 10, 'NIE OK');
+INSERT INTO `possibleanswers` (`id_answer`, `id_question`, `answerdescription`, `active`) VALUES
+(1, 1, 'TAK', 1),
+(3, 1, 'NIE', 1),
+(4, 2, '0', 1),
+(5, 2, '1', 1),
+(6, 3, '0', 1),
+(7, 3, '1', 1),
+(8, 3, '2', 1),
+(9, 3, '3', 1),
+(10, 4, 'NIC', 1),
+(11, 4, 'WSZYSTKO', 1),
+(12, 4, 'CZESC', 1),
+(13, 10, 'OK', 1),
+(14, 10, 'NIE OK', 1);
 
 -- --------------------------------------------------------
 
@@ -113,24 +117,25 @@ INSERT INTO `possibleanswers` (`id_answer`, `id_question`, `answerdescription`) 
 CREATE TABLE `questionbase` (
   `id_question` int(11) NOT NULL,
   `question_description` varchar(250) NOT NULL,
-  `id_questiontype` int(11) NOT NULL
+  `id_questiontype` int(11) NOT NULL,
+  `active` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `questionbase`
 --
 
-INSERT INTO `questionbase` (`id_question`, `question_description`, `id_questiontype`) VALUES
-(1, 'To jest pytanie 1', 1),
-(2, 'To jest pytanie 2', 2),
-(3, 'To jest pytanie 3', 2),
-(4, 'To jest pytanie 4', 2),
-(5, 'To jest pytanie 5', 1),
-(6, 'To jest pytanie 6', 1),
-(7, 'To jest pytanie 7', 2),
-(8, 'To jest pytanie 8', 1),
-(9, 'To jest pytanie 9', 2),
-(10, 'To jest pytanie 10', 1);
+INSERT INTO `questionbase` (`id_question`, `question_description`, `id_questiontype`, `active`) VALUES
+(1, 'To jest pytanie 1', 1, 1),
+(2, 'To jest pytanie 2', 2, 1),
+(3, 'To jest pytanie 3', 2, 1),
+(4, 'To jest pytanie 4', 2, 1),
+(5, 'To jest pytanie 5', 1, 1),
+(6, 'To jest pytanie 6', 1, 1),
+(7, 'To jest pytanie 7', 2, 1),
+(8, 'To jest pytanie 8', 1, 1),
+(9, 'To jest pytanie 9', 2, 1),
+(10, 'To jest pytanie 10', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -201,18 +206,20 @@ INSERT INTO `survey` (`id_survey`, `id_user`, `survey_description`, `datetime`, 
 CREATE TABLE `surveytemplate` (
   `id_surveytemplate` int(11) NOT NULL,
   `id_survey` int(11) DEFAULT NULL,
-  `id_question` int(11) DEFAULT NULL
+  `id_question` int(11) DEFAULT NULL,
+  `survey_description` varchar(250) DEFAULT NULL,
+  `question_description` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `surveytemplate`
 --
 
-INSERT INTO `surveytemplate` (`id_surveytemplate`, `id_survey`, `id_question`) VALUES
-(2, 2, 1),
-(4, 2, 2),
-(5, 2, 3),
-(6, 2, 4);
+INSERT INTO `surveytemplate` (`id_surveytemplate`, `id_survey`, `id_question`, `survey_description`, `question_description`) VALUES
+(2, 2, 1, NULL, NULL),
+(4, 2, 2, NULL, NULL),
+(5, 2, 3, NULL, NULL),
+(6, 2, 4, NULL, NULL);
 
 -- --------------------------------------------------------
 

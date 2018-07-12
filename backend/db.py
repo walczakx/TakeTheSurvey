@@ -96,7 +96,7 @@ class database:
         # zwraca wszystkie aktywne do wypelnienia ankiety
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT id_survey, survey_description, datetime FROM `survey` where active = '1'"
+            cmd = "SELECT id_survey, survey_description, datetime FROM `survey` where active = 1"
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
@@ -109,13 +109,13 @@ class database:
         try:
             cmd = "select * from `questionbase` where id_question = %s"
             cursor.execute(cmd, (id_question))
-            return  cursor.fetchall()[0]
+            return cursor.fetchall()[0]
         except:
             return redirect(url_for('msg_page'))
         finally:
             self.mysql_finalize()
-	
-	# works
+
+    # works
     def get_specific_survey(self, survey_id):
         # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
         cursor = self.mysql_connect()
@@ -150,9 +150,10 @@ class database:
 
     # works
     def get_all_question_in_questionbase(self):
+        # zwraca tylko dostepne pytania (te ktore moga byc uzyte w tworzeniu ankiety)
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT * FROM `questionbase`"
+            cmd = "SELECT * FROM `questionbase` where active = 1"
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
@@ -174,7 +175,7 @@ class database:
         # zwraca mozliwe odpowiedzi dla pytania
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT `id_answer`, `id_question`, `answerdescription` FROM `possibleanswers` WHERE id_question = %s"
+            cmd = "SELECT `id_answer`, `id_question`, `answerdescription` FROM `possibleanswers` WHERE id_question = %s and active = 1"
             cursor.execute(cmd, (id_question))
             return cursor.fetchall()
         except:
@@ -186,6 +187,17 @@ class database:
         try:
             cmd = "INSERT INTO `possibleanswers`(`id_question`, `answerdescription`) VALUES (%d, %s)"
             cursor.execute(cmd, (id_question, answerdescription))
+            return cursor.fetchone()
+        except:
+            # do something
+            return redirect(url_for('msg_page'))
+
+    def delete_possible_answer(self, id_answer):
+        # admin oznacza mozliwa odpowiedz jako nieaktywna (actve = 0)
+        cursor = self.mysql_connect()
+        try:
+            cmd = "UPDATE `possibleanswers` SET active = 0 where id_answer = %d"
+            cursor.execute(cmd, (id_answer))
             return cursor.fetchone()
         except:
             # do something
@@ -273,10 +285,10 @@ class database:
             return redirect(url_for('msg_page'))
 
     def delete_question(self, question_id):
-        # todo admin usuwa pytanie z bazy
+        # admin usuwa pytanie z bazy (tak naprawde wylaczymy pytanie active na '0', baza jest na ta chwile jednoczesnie slownikiem, wiec wywalenie rekordu usunie go z wypelnionych juz ankiet)
         cursor = self.mysql_connect()
         try:
-            cmd = "DELETE FROM `questionbase` WHERE id_question = %d"
+            cmd = "UPDATE `questionbase` SET `active` = 0 WHERE id_question = %d"
             cursor.execute(cmd, question_id)
             return cursor.fetchone()
         except:
@@ -287,14 +299,14 @@ class database:
     def get_question_from_questionbase_by_id(self, question_id):
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT * FROM `questionbase` where id_question = %s"
+            cmd = "SELECT * FROM `questionbase` where id_question = %s and active = 1"
             cursor.execute(cmd, (question_id))
             return cursor.fetchall()
         except:
             return False
 
     def get_correct_answer_for_specific_question(self, question_id):
-        #todo, nie jestem przekonany czy bedzie potrzebne
+        # todo, nie jestem przekonany czy bedzie potrzebne
         pass
 
     def add_completed_survey(self, id_survey, id_user):
@@ -329,7 +341,7 @@ class database:
         except:
             # do something
             return redirect(url_for('msg_page'))
-			
+
     def add_surveytemplate(self, id_survey, id_question):
         # dodaje pytania do szablonu utworzonej ankiety (tej ktora zostala utworzona za pomoca add_survey)
         cursor = self.mysql_connect()

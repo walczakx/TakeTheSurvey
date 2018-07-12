@@ -6,29 +6,32 @@
 			<h2>{{survey[0][2]}}</h2>
 			<h6>Created: {{survey[0][3]}}</h6>
 		<div>
-<br>
-	<div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="fa fa-question-circle"></span>{{ survey[0][9]}}</h3>
-    </div>
-</br>
+
 
 
 {% for row in survey %}
-    
 
-	{% if (survey[loop.index0][9] in survey[loop.index0-1][9] and loop.index0>0) or (loop.index0==0) %}
+{% if (survey[loop.index0][11] not in survey[loop.index0-1][11])%}
+<br>
+	<div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="fa fa-question-circle"></span>{{ row[11]}}</h3>
+    </div>
+</br>
+    
+{% endif %}
+
         <div class="panel-body two-col">
             <div class="row">
 				<div class="col-md-6">
                     <div class="well well-sm margin-bottom-none">
 					    {#warunek dla typu pytan jednokortnego i wielokrotnego wyboru#}
-						{% if (survey[loop.index0][10] == 1) %}
+						{% if (survey[loop.index0][12] == 1) %}
                                    						
 						<div class="radio">
 							<label>
-                                    <input type="radio" name={{row[8]}} id = {{row[11]}} value={{row[11]}}>
-									{{row[13]}}
+                                    <input type="radio" name="answers" id = {{row[14]}} value={{row[14]}}>
+									{{row[16]}}
 							</label>
                         </div>
 						
@@ -36,8 +39,8 @@
 						
 						<div class="checkbox">
 							<label>
-									<input type="checkbox" name={{row[11]}} id = {{row[11]}} value={{row[11]}}>
-									{{row[13]}}
+									<input type="checkbox" name="answers" id = {{row[14]}} value={{row[14]}}>
+									{{row[16]}}
 							</label>
                         </div>
 						
@@ -49,16 +52,11 @@
 			</div>
 		</div>
 	
-	{% else %}
 	
-<br>
-	<div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="fa fa-question-circle"></span>{{ row[9]}}</h3>
-    </div>
-</br>
 	
-	{% endif %}
+
+	
+	
    
   
 {% endfor %}
