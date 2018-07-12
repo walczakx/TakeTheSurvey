@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 11 Lip 2018, 23:32
+-- Czas generowania: 12 Lip 2018, 23:49
 -- Wersja serwera: 10.1.30-MariaDB
 -- Wersja PHP: 7.2.1
 
@@ -241,7 +241,7 @@ INSERT INTO `tags` (`id_tag`, `tag_description`) VALUES
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
   `login` varchar(25) NOT NULL,
-  `pass` varchar(25) NOT NULL,
+  `pass` varchar(40) NOT NULL,
   `email` varchar(50) NOT NULL,
   `Role` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
