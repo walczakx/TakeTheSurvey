@@ -74,6 +74,7 @@ def delete_user_account():
 
 	if main_.do_the_login(request.form['usrname'], psw):
 		main_.delete_account(request.form['usrname'])
+		main_.logout()
 		return redirect(url_for('msg_page', msg = "Your account was successfully deleted. So long."))
 	return redirect(url_for('msg_page'))
 
