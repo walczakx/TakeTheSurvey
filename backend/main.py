@@ -11,7 +11,6 @@ class main():
 	def do_the_login(self, username, password):
 		if self.user_.try_to_login(self.user_.get_user_id(username), password):
 			session['username'] = username
-			session['question_counter'] = 0
 			session['question_list'] = []
 			return True
 		return False
@@ -27,7 +26,6 @@ class main():
 	def logout(self):
 		session.pop('username', None)
 		session.pop('question_list', None)
-		session.pop('question_counter', None)
 		session.pop('survey_name', None)
 		return redirect(url_for('msg_page', msg = "You've been logged out"))
 
@@ -35,6 +33,8 @@ class main():
 		return 'username' in session
 
 	def get_user_data(self):
+		if not self.is_user_logged():
+			return self.logout()
 		return self.db_.get_user_data(self.user_.get_user_id(session.get('username')))
 
 	def delete_account(self, usr):
@@ -48,19 +48,35 @@ class main():
 	def get_survey(self, survey_id):
 		return self.db_.get_specific_survey(survey_id)
 
+	def get_survey_id(self, survey_name):
+		return self.db_.get_specific_survey_id(survey_name)
+
 	def create_survey(self, questions, name):
-		#todo
-		return True
+		try:
+			self.db_.add_survey(self.get_logged_user_id(), name)
+			id = self.get_survey_id(self.get_survey_name())
+			print "id: " + str(id)
+			for q in questions:
+				print "pyt: " + str(q[0])
+				self.db_.add_surveytemplate(id, q[0])
+				
+			self.clear_new_survey()
+			return True
+		except:
+			return False
 
 	def delete_survey(self, survey_id):
-		return True #self.db_.delete_survey()  ## todo check if exist
+		try:
+			self.db_.delete_survey(survey_id)
+			return True
+		except:
+			return False
 
 	def add_question_to_new_survey(self, question_id):
 		if not self.is_user_logged():
 			return self.logout()
 
 		a = session.get('question_list')
-		print "adding: before" + str(a)
 		if a is None:
 			a = []
 
@@ -69,7 +85,6 @@ class main():
 			session['question_list'] = a
 		else:
 			return False
-		print "adding: after" + str(session.get('question_list'))
 		return True
 
 	def add_question_to_database(self):
@@ -86,9 +101,7 @@ class main():
 		return self.db_.get_question_from_questionbase_by_id(question_id)
 
 	def get_answers_to_questions(self, question_id):
-		d =  self.db_.get_possible_answers(question_id)
-		print d
-		return d
+		return self.db_.get_possible_answers(question_id)
 
 	def get_question_list(self):
 		return self.db_.get_all_question_in_questionbase()
@@ -103,20 +116,21 @@ class main():
 			return self.logout()
 
 		if self.auth_.validate_username(name):
-			print 'true'
 			session['survey_name'] = name
 			return True
 		return False
 
 	def get_saved_questions(self):
 		questions = session.get('question_list')
-		saved_questions = []
+		saved_questions = [0]
 
 		for i in questions:
 			saved_questions.append(self.db_.get_specific_question_name(i))
 
-		if len(saved_questions) == 0:
+		if len(saved_questions) == 1:
 			return None
+
+		saved_questions.remove(0)
 		return saved_questions
 
 	def get_survey_name(self):
@@ -134,3 +148,12 @@ class main():
 		else:
 			return False
 		return True
+
+	def clear_new_survey(self):
+		session['question_list'] = []
+		session['survey_name'] = ""
+
+	def disable_survey(self, id):
+		if self.db_.disable_survey(id):
+			return True
+		return False

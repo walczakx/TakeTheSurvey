@@ -56,8 +56,8 @@ class database:
         finally:
             self.mysql_finalize()
 
+	#works
     def get_user_data(self, user_id):
-        # need to select user data from sql na parse it to some dictionary {"username": row[0], "email": row[1] } etc
         cursor = self.mysql_connect()
         try:
             cmd = "SELECT id_user, login, email FROM `users` WHERE id_user = %s"
@@ -115,27 +115,32 @@ class database:
         finally:
             self.mysql_finalize()
 
+    def get_specific_survey_id(self, name):
+        cursor = self.mysql_connect()
+        try:
+            cmd = "select id_survey from `survey` where survey_description = %s"
+            cursor.execute(cmd, (name))
+            return cursor.fetchall()[0][0]
+        except:
+            return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
+
     # works
     def get_specific_survey(self, survey_id):
         # jw zwraca cala ankiete  z pytaniami do wypelnienia z mozliwymi odpowiedziami
         cursor = self.mysql_connect()
         try:
-            print "try"
-            print survey_id
             cmd = "SELECT * FROM `survey` " \
                   "JOIN surveytemplate ON survey.id_survey = surveytemplate.id_survey " \
                   "JOIN questionbase ON surveytemplate.id_question = questionbase.id_question " \
                   "JOIN possibleanswers ON questionbase.id_question = possibleanswers.id_question " \
                   "WHERE survey.id_survey = %s"
             cursor.execute(cmd, (survey_id))
-            d = cursor.fetchall()
-            print d
-            return d
+            return cursor.fetchall()
         except:
-            print "except"
             return redirect(url_for('msg_page'))
         finally:
-            print "finally"
             self.mysql_finalize()
 
     def add_question_to_questionbase(self, question_description, id_question_type):
@@ -339,8 +344,9 @@ class database:
             cursor.execute(cmd, (id_user, survey_description))
             return cursor.fetchone()
         except:
-            # do something
             return redirect(url_for('msg_page'))
+        finally:
+			self.mysql_finalize()
 
     def add_surveytemplate(self, id_survey, id_question):
         # dodaje pytania do szablonu utworzonej ankiety (tej ktora zostala utworzona za pomoca add_survey)
@@ -348,7 +354,29 @@ class database:
         try:
             cmd = "INSERT INTO `surveytemplate`(`id_survey`, `id_question`) VALUES (%s, %s)"
             cursor.execute(cmd, (id_survey, id_question))
-            return cursor.fetchone()
         except:
-            # do something
             return redirect(url_for('msg_page'))
+        finally:
+			self.mysql_finalize()
+
+    def delete_survey(self, id):
+        cursor = self.mysql_connect()
+        try:
+            cmd = "delete from `surveytemplate` where id_survey = %s"
+            cursor.execute(cmd, (id))
+            cmd = "delete from `survey` where id_survey = %s"
+            cursor.execute(cmd, (id))
+        except:
+            return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()
+
+    def disable_survey(self, id):
+        cursor = self.mysql_connect()
+        try:
+            cmd = "update `survey` set active = 0 where id_survey = %s"
+            cursor.execute(cmd, (id))
+        except:
+            return redirect(url_for('msg_page'))
+        finally:
+            self.mysql_finalize()

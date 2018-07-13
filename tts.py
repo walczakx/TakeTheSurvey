@@ -4,7 +4,6 @@ import backend.main as main
 app = Flask(__name__)
 main_ = main.main(app)
 
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -40,7 +39,6 @@ def logout():
 		return redirect(url_for('msg_page'))
 	return redirect(url_for('msg_page', msg = "You're now logged off"))
 
-#works
 @app.route('/user_account', methods=['GET'])
 def user_account():
 	user_data = main_.get_user_data()
@@ -63,7 +61,6 @@ def delete_account_confirmation():
 	if user_data:
 		return render_template('delete_account.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
-	
 
 # works
 @app.route('/delete_account',methods=['POST'])
@@ -78,7 +75,6 @@ def delete_user_account():
 		return redirect(url_for('msg_page', msg = "Your account was successfully deleted. So long."))
 	return redirect(url_for('msg_page'))
 
-#todo
 @app.route('/add_survey')
 def add_survey():
 	questions = main_.get_saved_questions()
@@ -112,7 +108,7 @@ def edit_specific_survey(survey_id):
 	return redirect(url_for('msg_page'))
 
 # todo
-@app.route('/delete/<survey_id>', methods=['POST'])
+@app.route('/delete/<survey_id>', methods = ['GET'])
 def delete_survey(survey_id):
 	if has_admin_priviliges() or is_survey_owner(survey_id):
 		if main_.delete_survey(survey_id):
@@ -184,6 +180,12 @@ def question_delete(question_id):
 	if main_.delete_question_from_survey(question_id):
 		return redirect(url_for('add_survey'))
 	return redirect(url_for('msg_page'))
+
+@app.route('/disable/<survey_id>')
+def disble_survey(survey_id):
+	if main_.disable_survey(survey_id):
+		return redirect(url_for('show_survey', msg = 'Selected survey was temporary disabled'))
+	return redirect(url_for('show_survey', msg = 'Ops, something went wrong... Try again?'))
 
 #helper functions for templates, all done
 def is_user_logged():
