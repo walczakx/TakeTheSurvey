@@ -79,13 +79,13 @@ class database:
             return False
         finally:
             self.mysql_finalize()
-
+	# works
     def delete_account(self, user_id):
         # sql delete account
         cursor = self.mysql_connect()
         try:
-            cmd = "DELETE * FROM `users` WHERE id_user = %d"
-            cursor.execute(cmd, (user_id,))
+            cmd = "DELETE FROM `users` WHERE id_user = %s"
+            cursor.execute(cmd, (user_id))
             return cursor.fetchone()
         except:
             return redirect(url_for('msg_page'))
@@ -142,7 +142,7 @@ class database:
         # dodaje pytanie do bazy pytan wraz z typem pytania (1 jednokrotny wybor, 2 wielokrotny wybor)
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `questionbase`(`question_description`, `id_questiontype`) VALUES (%s, %d)"
+            cmd = "INSERT INTO `questionbase`(`question_description`, `id_questiontype`) VALUES (%s, %s)"
             cursor.execute(cmd, (question_description, id_question_type))
             return cursor.fetchone()
         except:
@@ -185,7 +185,7 @@ class database:
         # dodaje mozliwe odpowiedzi do pytania
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `possibleanswers`(`id_question`, `answerdescription`) VALUES (%d, %s)"
+            cmd = "INSERT INTO `possibleanswers`(`id_question`, `answerdescription`) VALUES (%s, %s)"
             cursor.execute(cmd, (id_question, answerdescription))
             return cursor.fetchone()
         except:
@@ -196,7 +196,7 @@ class database:
         # admin oznacza mozliwa odpowiedz jako nieaktywna (actve = 0)
         cursor = self.mysql_connect()
         try:
-            cmd = "UPDATE `possibleanswers` SET active = 0 where id_answer = %d"
+            cmd = "UPDATE `possibleanswers` SET active = 0 where id_answer = %s"
             cursor.execute(cmd, (id_answer))
             return cursor.fetchone()
         except:
@@ -219,7 +219,7 @@ class database:
         # zwraca wlasciciela ankiety, to zwraca tworce szablonu a nie usera ktory wypelnil ankiete
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT  `id_user` FROM `survey` WHERE id_survey = %d"
+            cmd = "SELECT  `id_user` FROM `survey` WHERE id_survey = %s"
             cursor.execute(cmd, (survey_id))
             return cursor.fetchone()
         except:
@@ -229,7 +229,7 @@ class database:
         # zwraca usera ktory wypelnil ankiete (respondenta)
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT  `id_user` FROM `completedsurvey` WHERE id_completedsurvey = %d"
+            cmd = "SELECT  `id_user` FROM `completedsurvey` WHERE id_completedsurvey = %s"
             cursor.execute(cmd, (completedsurvey_id))
             return cursor.fetchone()
         except:
@@ -247,7 +247,7 @@ class database:
         # zwraca liczbe ankiet (wzorccow) usera
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT  count(id_survey) AS NumberOfSurveys FROM `survey` WHERE id_user = %d"
+            cmd = "SELECT  count(id_survey) AS NumberOfSurveys FROM `survey` WHERE id_user = %s"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
         except:
@@ -257,7 +257,7 @@ class database:
         # zwraca liczbe ankiet wypelnionych przez usera
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT  count(id_completedsurvey) AS NumberOfCompletedSurveys FROM `completedsurvey` WHERE id_user = = %d"
+            cmd = "SELECT  count(id_completedsurvey) AS NumberOfCompletedSurveys FROM `completedsurvey` WHERE id_user = = %s"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
         except:
@@ -267,7 +267,7 @@ class database:
         # zwraca, id szablonu, id pytan, id odpoodpowiedzi dla wypelnionej ankiety
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT * FROM `completedanswers` WHERE id_completedsurvey = %d"
+            cmd = "SELECT * FROM `completedanswers` WHERE id_completedsurvey = %s"
             cursor.execute(cmd, (completedsurvey_id))
             return cursor.fetchone()
         except:
@@ -277,7 +277,7 @@ class database:
         # zwraca wypelnione ankiety przez uzytownika (lista completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user)
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user FROM `survey` left Join `completedsurvey` ON survey.id_survey = completedsurvey.id_survey WHERE completedsurvey.id_user = %d"
+            cmd = "SELECT completedsurvey.id_completedsurvey, survey.id_survey, survey.survey_description, completedsurvey.datetime, completedsurvey.id_user FROM `survey` left Join `completedsurvey` ON survey.id_survey = completedsurvey.id_survey WHERE completedsurvey.id_user = %s"
             cursor.execute(cmd, (user_id))
             completed_surveys = cursor.fetchall()
             return completed_surveys
@@ -288,7 +288,7 @@ class database:
         # admin usuwa pytanie z bazy (tak naprawde wylaczymy pytanie active na '0', baza jest na ta chwile jednoczesnie slownikiem, wiec wywalenie rekordu usunie go z wypelnionych juz ankiet)
         cursor = self.mysql_connect()
         try:
-            cmd = "UPDATE `questionbase` SET `active` = 0 WHERE id_question = %d"
+            cmd = "UPDATE `questionbase` SET `active` = 0 WHERE id_question = %s"
             cursor.execute(cmd, question_id)
             return cursor.fetchone()
         except:
@@ -313,7 +313,7 @@ class database:
         # wypelniona ankiete (uzupelnia tabele completedsurvey) add_completed_survey i add_completed_answers_for_completed_survey nalezy wywolac w momencie submit ( w podanej kolejnosci)# add_completed_answers_for_completed_survey nalezy wywolac dla kazdej dodwanej odpowiedzi #add_completed_survey dla ankiety trzeba wykonac tylko raz na samym poczatku po submit
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `completedsurvey`(`id_survey`, `id_user`) VALUES (%d, %d)"
+            cmd = "INSERT INTO `completedsurvey`(`id_survey`, `id_user`) VALUES (%s, %s)"
             cursor.execute(cmd, (id_survey, id_user))
             return cursor.fetchone()
         except:
@@ -324,7 +324,7 @@ class database:
         # todo, dodaje odpowiedzi wypelnionej ankiety  (uzupelnia tabele completedanswers) # add_completed_survey i add_completed_answers_for_completed_survey nalezy wywolac w momencie submit ( w podanej kolejnosci) # add_completed_answers_for_completed_survey nalezy wywolac dla kazdej dodwanej odpowiedzi # add_completed_survey dla ankiety trzeba wykonac tylko raz na samym poczatku po submit
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `completedanswers` (id_surveytemplate, id_question, id_answer, id_completedsurvey) VALUES (%d, %d, %d, (SELECT MAX(id_completedsurvey) from `completedsurvey` ))"
+            cmd = "INSERT INTO `completedanswers` (id_surveytemplate, id_question, id_answer, id_completedsurvey) VALUES (%s, %s, %s, (SELECT MAX(id_completedsurvey) from `completedsurvey` ))"
             cursor.execute(cmd, (id_surveytemplate, id_question, id_answer))
             return cursor.fetchone()
         except:
@@ -335,7 +335,7 @@ class database:
         # tworzy nowa ankiete bez pytan sam "kontener"
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `survey`(`id_user`, `survey_description`) VALUES (%d, %s)"
+            cmd = "INSERT INTO `survey`(`id_user`, `survey_description`) VALUES (%s, %s)"
             cursor.execute(cmd, (id_user, survey_description))
             return cursor.fetchone()
         except:
@@ -346,7 +346,7 @@ class database:
         # dodaje pytania do szablonu utworzonej ankiety (tej ktora zostala utworzona za pomoca add_survey)
         cursor = self.mysql_connect()
         try:
-            cmd = "INSERT INTO `surveytemplate`(`id_survey`, `id_question`) VALUES (%d, %d)"
+            cmd = "INSERT INTO `surveytemplate`(`id_survey`, `id_question`) VALUES (%s, %s)"
             cursor.execute(cmd, (id_survey, id_question))
             return cursor.fetchone()
         except:

@@ -25,20 +25,20 @@
 					
 					
                       
-                        <td> You are about to delete account!</td>
+                        <td> You are about to delete user account: {{row[1]}}!</td>
 						
-						 <tr> 
+						 
 					  <div class="form-group">
-                        <td>Username:<input type="text" class="form-control" name="usrname" placeholder="Enter username"></input></td>
+                        <td><input type="hidden" class="form-control" name="usrname" value={{row[1]}}></input></td>
 					  </div>
-                      </tr>
+                     
 
 
 						
                       <tr> 
 					  <div class="form-group">
-                        <td>Enter Password:<input type="password" class="form-control" name="psw" placeholder="Enter password">
-						<p class="help-block">Password should be at least 4 characters</p></input></td>
+                        <td><input type="password" class="form-control" name="psw" placeholder="Enter password">
+						</input></td>
 					  </div>
                       </tr>
 				

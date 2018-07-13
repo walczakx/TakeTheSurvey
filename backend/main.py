@@ -8,7 +8,7 @@ class main():
 		self.user_ = user.user(self.db_)
 		self.auth_ = auth.auth()
 
-	def do_the_login(self, username, password, rememberme):
+	def do_the_login(self, username, password):
 		if self.user_.try_to_login(self.user_.get_user_id(username), password):
 			session['username'] = username
 			session['question_counter'] = 0
@@ -39,7 +39,8 @@ class main():
 
 	def delete_account(self, usr):
 		if usr == session.get('username'):
-			self.db_.delete_account(self.user_.get_user_id(session.get('username')))
+			return self.db_.delete_account(self.user_.get_user_id(session.get('username')))
+		return False
 
 	def get_survey_list(self):
 		return self.db_.get_survey_list()

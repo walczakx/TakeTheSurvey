@@ -28,7 +28,7 @@ def login():
 	assert request.method == "POST"
 	psw = main_.auth_.hash(request.form['psw'])
 
-	if main_.do_the_login(request.form['usrname'], psw, request.form['rememberme']):
+	if main_.do_the_login(request.form['usrname'], psw):
 		return redirect(url_for('msg_page', msg = "Success! You're now logged in"))
 	return redirect(url_for('msg_page'))
 
@@ -40,7 +40,7 @@ def logout():
 		return redirect(url_for('msg_page'))
 	return redirect(url_for('msg_page', msg = "You're now logged off"))
 
-#works, template need to be done
+#works
 @app.route('/user_account', methods=['GET'])
 def user_account():
 	user_data = main_.get_user_data()
@@ -48,7 +48,7 @@ def user_account():
 		return render_template('user.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
-
+# works
 @app.route('/edit_user_data', methods=['GET'])
 def edit_user_data():
 	user_data = main_.get_user_data()
@@ -56,6 +56,7 @@ def edit_user_data():
 		return render_template('edit_user_data.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
+# works
 @app.route('/delete_account_confirmation', methods=['GET'])
 def delete_account_confirmation():
 	user_data = main_.get_user_data()
@@ -64,9 +65,9 @@ def delete_account_confirmation():
 	return redirect(url_for('msg_page'))
 	
 
-# not tested, should work
+# works
 @app.route('/delete_account',methods=['POST'])
-def delete_account():
+def delete_user_account():
 	assert request.path == '/delete_account'
 	assert request.method == 'POST'
 	psw = main_.auth_.hash(request.form['psw'])
