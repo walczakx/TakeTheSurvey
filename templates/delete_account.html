@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+
+<div class="container" >
+      
+          <div class="panel panel-info" >
+            <div class="panel-heading">
+              <h3 class="panel-title">Delete Account</h3>
+			 
+		
+            </div>
+	
+            <div class="panel-body" >
+             
+              
+                <div > 
+				{% for row in user_data %}
+				  <form role="form" action="/delete_account" method="POST">
+                  <table class="table table-user-information">
+                   
+					<tbody>
+					
+					
+                      
+                        <td> You are about to delete account!</td>
+						
+						 <tr> 
+					  <div class="form-group">
+                        <td>Username:<input type="text" class="form-control" name="usrname" placeholder="Enter username"></input></td>
+					  </div>
+                      </tr>
+
+
+						
+                      <tr> 
+					  <div class="form-group">
+                        <td>Enter Password:<input type="password" class="form-control" name="psw" placeholder="Enter password">
+						<p class="help-block">Password should be at least 4 characters</p></input></td>
+					  </div>
+                      </tr>
+				
+					  
+                     
+                    </tbody>
+					 
+                  </table>
+                  <p><button type="submit" class="btn btn-primary">Delete Account</button>
+				  </form>
+				  <button href="/user_account" class="btn btn-primary">Cancel</button></p>
+				  
+				  {% endfor %}
+                </div>
+
+             
+            </div>
+
+           </div>  
+          </div>
+	
+
+
+
+{% endblock %}

@@ -41,18 +41,34 @@ def logout():
 	return redirect(url_for('msg_page', msg = "You're now logged off"))
 
 #works, template need to be done
-@app.route('/user_account', methods=["GET"])
+@app.route('/user_account', methods=['GET'])
 def user_account():
 	user_data = main_.get_user_data()
 	if user_data:
 		return render_template('user.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
+
+@app.route('/edit_user_data', methods=['GET'])
+def edit_user_data():
+	user_data = main_.get_user_data()
+	if user_data:
+		return render_template('edit_user_data.html', user_data = user_data)
+	return redirect(url_for('msg_page'))
+
+@app.route('/delete_account_confirmation', methods=['GET'])
+def delete_account_confirmation():
+	user_data = main_.get_user_data()
+	if user_data:
+		return render_template('delete_account.html', user_data = user_data)
+	return redirect(url_for('msg_page'))
+	
+
 # not tested, should work
 @app.route('/delete_account',methods=['POST'])
-def delete_user_account():
+def delete_account():
 	assert request.path == '/delete_account'
-	assert request.method == "POST"
+	assert request.method == 'POST'
 	psw = main_.auth_.hash(request.form['psw'])
 
 	if main_.do_the_login(request.form['usrname'], psw):

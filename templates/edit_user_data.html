@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+
+<div class="container" >
+      
+          <div class="panel panel-info" >
+            <div class="panel-heading">
+              <h3 class="panel-title">Edit Account</h3>
+			 
+		
+            </div>
+	
+            <div class="panel-body" >
+             
+              
+                <div > 
+				{% for row in user_data %}
+                  <table class="table table-user-information">
+                   
+					<tbody>
+					<form role="form" action="/update_user_data" method="POST">
+					 
+                      <tr>
+					    <div class="form-group">
+                        <td>Username:<input type="text" class="form-control" name="usrname" placeholder="{{ row[1] }}" class="input-xlarge">
+						<p class="help-block">Username can contain any letters or numbers, without spaces</p></input></td>
+                        </div>
+					  </tr>
+                      <tr>
+					    <div class="form-group">
+                        <td>Email:<input type="text" class="form-control" name="email" placeholder="{{ row[2] }}" class="input-xlarge"></input></td> 
+					  </div>						
+                      </tr>
+					  <tr>
+					  <div class="form-group">
+                        <td>Password:<input type="password" class="form-control" name="psw" placeholder="Enter password"></input></td>           
+                       </div>
+					 </tr>
+					  <tr>
+					  <div class="form-group">
+                        <td>Confirm Password:<input type="password" class="form-control" name="psw_confirm" placeholder="Enter password, again"></input></td>           
+                       </div>
+					  </tr>
+					 
+					  </form>
+                     
+                    </tbody>
+					 
+                  </table>
+                  <a type="submit" class="btn btn-primary" href="/user_account">Save Changes</a>
+				  <a href="/user_account" class="btn btn-primary">Cancel</a>
+				  {% endfor %}
+                </div>
+
+             
+            </div>
+
+           </div>  
+          </div>
+	
+
+
+
+{% endblock %}
