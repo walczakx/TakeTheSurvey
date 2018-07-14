@@ -28,7 +28,7 @@ class database:
         try:
             cmd = "select id_user from users where login = %s"
             cursor.execute(cmd, (username))
-            return cursor.fetchone()[0]
+            return cursor.fetchone()
         except:
             return redirect(url_for('msg_page'))
 
@@ -252,7 +252,7 @@ class database:
         # zwraca liczbe ankiet (wzorccow) usera
         cursor = self.mysql_connect()
         try:
-            cmd = "SELECT  count(id_survey) AS NumberOfSurveys FROM `survey` WHERE id_user = %s"
+            cmd = "SELECT  * FROM `survey` WHERE id_user = %s"
             cursor.execute(cmd, (user_id))
             return cursor.fetchone()
         except:
