@@ -27,6 +27,7 @@ class main():
 		session.pop('username', None)
 		session.pop('question_list', None)
 		session.pop('survey_name', None)
+		session.pop('question_name', None)
 		return redirect(url_for('msg_page', msg = "You've been logged out"))
 
 	def is_user_logged(self):
@@ -55,11 +56,8 @@ class main():
 		try:
 			self.db_.add_survey(self.get_logged_user_id(), name)
 			id = self.get_survey_id(self.get_survey_name())
-			print "id: " + str(id)
 			for q in questions:
-				print "pyt: " + str(q[0])
 				self.db_.add_surveytemplate(id, q[0])
-				
 			self.clear_new_survey()
 			return True
 		except:
@@ -86,10 +84,6 @@ class main():
 		else:
 			return False
 		return True
-
-	def add_question_to_database(self):
-		# todo, verification etc 
-		return True # self.db_add_question()
 
 	def get_logged_user_id(self):
 		return self.db_.get_user_id(session.get('username'))
@@ -120,6 +114,15 @@ class main():
 			return True
 		return False
 
+	def set_question_name(self, name):
+		if not self.is_user_logged():
+			return self.logout()
+
+		if self.auth_.validate_username(name):
+			session['question_name'] = name
+			return True
+		return False
+
 	def get_saved_questions(self):
 		questions = session.get('question_list')
 		saved_questions = [0]
@@ -135,6 +138,9 @@ class main():
 
 	def get_survey_name(self):
 		return session.get('survey_name')
+
+	def get_question_name(self):
+		return session.get('question_name')
 
 	def delete_question_from_survey(self, question_id):
 		if not self.is_user_logged():
@@ -153,7 +159,13 @@ class main():
 		session['question_list'] = []
 		session['survey_name'] = ""
 
+	def clear_new_question(self):
+		session['question_name'] = ""
+
 	def disable_survey(self, id):
 		if self.db_.disable_survey(id):
 			return True
 		return False
+
+	def add_question(self):
+		pass

@@ -22,7 +22,6 @@ class database:
         self.conn.commit()
         self.conn.close()
 
-    # works
     def get_user_id(self, username):
         cursor = self.mysql_connect()
         try:
@@ -32,7 +31,6 @@ class database:
         except:
             return redirect(url_for('msg_page'))
 
-    # works
     def user_register(self, username, email, password):
         cursor = self.mysql_connect()
         try:
@@ -44,7 +42,6 @@ class database:
         finally:
             self.mysql_finalize()
 
-    # works
     def check_if_username_is_free(self, username):
         cursor = self.mysql_connect()
         try:
@@ -56,7 +53,6 @@ class database:
         finally:
             self.mysql_finalize()
 
-	#works
     def get_user_data(self, user_id):
         cursor = self.mysql_connect()
         try:
@@ -68,7 +64,6 @@ class database:
         finally:
             self.mysql_finalize()
 
-    # works
     def get_user_privileges(self, user_id):
         cursor = self.mysql_connect()
         try:
@@ -79,7 +74,7 @@ class database:
             return False
         finally:
             self.mysql_finalize()
-	# works
+
     def delete_account(self, user_id):
         # sql delete account
         cursor = self.mysql_connect()

@@ -12,7 +12,7 @@ def index():
 @app.route('/register', methods=["POST"])
 def register():
 	assert request.path == '/register'
-	assert request.method == "POST"
+	assert request.method == "POST"	
 
 	psw = main_.auth_.hash(request.form['psw'])
 	psw_c = main_.auth_.hash(request.form['psw_confirm'])
@@ -46,7 +46,6 @@ def user_account():
 		return render_template('user.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
-# works
 @app.route('/edit_user_data', methods=['GET'])
 def edit_user_data():
 	user_data = main_.get_user_data()
@@ -54,7 +53,6 @@ def edit_user_data():
 		return render_template('edit_user_data.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
-# works
 @app.route('/delete_account_confirmation', methods=['GET'])
 def delete_account_confirmation():
 	user_data = main_.get_user_data()
@@ -62,7 +60,6 @@ def delete_account_confirmation():
 		return render_template('delete_account.html', user_data = user_data)
 	return redirect(url_for('msg_page'))
 
-# works
 @app.route('/delete_account',methods=['POST'])
 def delete_user_account():
 	assert request.path == '/delete_account'
@@ -99,7 +96,6 @@ def create_new_survey():
 		return redirect(url_for('show_survey'))
 	return redirect(url_for('msg_page'))
 
-# todo
 @app.route('/edit/<survey_id>')
 def edit_specific_survey(survey_id):
 	survey = main_.get_survey(survey_id)
@@ -107,7 +103,6 @@ def edit_specific_survey(survey_id):
 		return render_template('edit_survey.html', survey = survey)
 	return redirect(url_for('msg_page'))
 
-# todo
 @app.route('/delete/<survey_id>', methods = ['GET'])
 def delete_survey(survey_id):
 	if has_admin_priviliges() or is_survey_owner(survey_id):
@@ -115,21 +110,23 @@ def delete_survey(survey_id):
 			return redirect(url_for('show_survey'))
 	return redirect(url_for('msg_page'))
 
-# todo
-@app.route('/add_question', methods=['POST'])
+@app.route('/add_question')
+def add_squestion():
+	name = main_.get_question_name()
+	return render_template('question_add_new.html', name = name)
+
+@app.route('/add_questions', methods=['GET'])
 def add_question():
 	if main_.add_question():
-		return redirect(url_for('show_questions', msg="ok"))
+		return redirect(url_for('show_questions', msg="All done, your question was added"))
 	return redirect(url_for('msg_page'))
 
-# todo
 @app.route('/edit_question/<question_id>',methods=['GET'])
 def edit_specific_question(question_id):
 	question = main_.get_question(question_id)
 	if question and (is_question_owner(question_id) or has_admin_priviliges()):
 		return render_template('question_edit.html', question = question)
 
-# todo
 @app.route('/delete_question/<question_id>')
 def delete_question(question_id):
 	if main_.delete_question(question_id):
@@ -186,6 +183,12 @@ def disble_survey(survey_id):
 	if main_.disable_survey(survey_id):
 		return redirect(url_for('show_survey', msg = 'Selected survey was temporary disabled'))
 	return redirect(url_for('show_survey', msg = 'Ops, something went wrong... Try again?'))
+
+@app.route('/set_new_question_name', methods=['GET'])
+def set_new_question_name():
+	if main_.set_question_name(request.args.get('name')):
+		return redirect(url_for('add_squestion'))
+	return redirect(url_for('msg_page'))
 
 #helper functions for templates, all done
 def is_user_logged():
