@@ -1,25 +1,24 @@
 
- <br /> show all questions<br />
 
  {% if msg %} {{ msg }} kajdslkfjdslk {% endif %}
 
 
- Opcje do zaimplementowania: dodaj do nowej ankiety (add to session), pokaz szczegoły, dla admina/ownera: edytuj, usun
-
-<table>
 {% for row in question %}
-    <tr>
-    {% for d in row %}
-        <td>{{ d }}</td>
-    {% endfor %}
-    </tr>
+<h3>Question description:{{ row[1]}}</h3>
+<br><h4>Possible answers:</h4></br>
 {% endfor %}
-
     {% for row in answers %}
     <tr>
-    {% for d in row %}
-        <td>{{ d }}</td>
-    {% endfor %}
+    
+	    <div class="panel-body two-col">
+            <div class="row">
+				<div class="col-md-6">
+                    <div class="well well-sm margin-bottom-none">
+						<td>{{ row[2]}}</td>
+					</div>
+				</div>
+			</div>
+		</div>
+    
     </tr>
 {% endfor %}
-</table>
