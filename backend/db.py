@@ -236,12 +236,10 @@ class database:
             return redirect(url_for('msg_page'))
 
     def get_question_owner(self, survey_id):
-        # TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
         return False
 
     def is_user_have_any_questions(self, user_id):
-        # TODO tego nie ma baza pytan jest wspolna, na ta chwile nie ma identyfikacji kto dodal pytanie do bazy
-        return False
+         return False
 
     def is_user_have_any_surveys(self, user_id):
         # zwraca liczbe ankiet (wzorccow) usera
@@ -306,7 +304,6 @@ class database:
             return False
 
     def get_correct_answer_for_specific_question(self, question_id):
-        # todo, nie jestem przekonany czy bedzie potrzebne
         pass
 
     def add_completed_survey(self, id_survey, id_user):
@@ -321,7 +318,6 @@ class database:
             return redirect(url_for('msg_page'))
 
     def add_completed_answers_for_completed_survey(self, id_surveytemplate, id_question, id_answer):
-        # todo, dodaje odpowiedzi wypelnionej ankiety  (uzupelnia tabele completedanswers) # add_completed_survey i add_completed_answers_for_completed_survey nalezy wywolac w momencie submit ( w podanej kolejnosci) # add_completed_answers_for_completed_survey nalezy wywolac dla kazdej dodwanej odpowiedzi # add_completed_survey dla ankiety trzeba wykonac tylko raz na samym poczatku po submit
         cursor = self.mysql_connect()
         try:
             cmd = "INSERT INTO `completedanswers` (id_surveytemplate, id_question, id_answer, id_completedsurvey) VALUES (%s, %s, %s, (SELECT MAX(id_completedsurvey) from `completedsurvey` ))"
